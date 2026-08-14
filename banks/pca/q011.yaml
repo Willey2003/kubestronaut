@@ -1,0 +1,35 @@
+kind: knowledge
+domain: prometheus-architecture
+level: core
+title: The scrape lifecycle
+prompt: |
+  During a single scrape cycle, which sequence best describes what happens
+  inside Prometheus?
+options:
+  A: "Prometheus requests the /metrics endpoint, parses the exposition format, and appends samples to the TSDB for later querying and evaluation."
+  B: "Prometheus sends logs to the target for aggregation."
+  C: "Prometheus pushes an alert every cycle before scraping."
+  D: "Prometheus stores raw counters and never evaluates rules."
+answer: A
+explanation: |
+  A scrape requests the target's metrics endpoint, parses samples, and ingests
+  them. Rule evaluation happens separately on its own interval, and queries
+  read from the stored series.
+solution: |
+  Each scrape cycle begins with Prometheus requesting the target's /metrics
+  endpoint over HTTP. The returned text in the exposition format is parsed into
+  samples, which are appended to the local TSDB. Rule evaluation happens on a
+  separate evaluation interval, independent of the scrape interval, and
+  alerting and recording rules are applied to the ingested data. Queries
+  evaluate against the stored series. So the correct mental model is scrape,
+  ingest, evaluate, and query, with scrape and rule evaluation operating on
+  their own schedules.
+checks:
+  - desc: Names the scrape endpoint
+    contains: "/metrics"
+  - desc: Mentions parsing the exposition format
+    contains: "exposition format"
+  - desc: Mentions the TSDB
+    contains: "TSDB"
+  - desc: Distinguishes rule evaluation
+    contains: "rule evaluation"

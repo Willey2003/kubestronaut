@@ -1,0 +1,21 @@
+kind: knowledge
+domain: variables
+level: core
+title: Query variables for filtering
+prompt: |
+  A dashboard shows per-instance metrics and a dropdown to switch between
+  hosts. What is the recommended way to build that dropdown?
+options:
+  A: "A query variable whose query pulls the list of instances from the data
+    source (for example label_values(node_boot_time, instance)), referenced
+    in panel queries as $instance."
+  B: "A new panel for each host."
+  C: "Hardcoding every host into the dashboard JSON."
+  D: "A comment annotation per host."
+answer: A
+explanation: |
+  Dashboard variables create interactive controls. A query variable sources
+  its values from the data source, and panel queries reference it with
+  $variable so the dashboard updates when the selection changes. Building one
+  panel per host or hardcoding values does not scale, and annotations are for
+  events, not filters.

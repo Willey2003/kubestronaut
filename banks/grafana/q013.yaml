@@ -1,0 +1,20 @@
+kind: knowledge
+domain: provisioning-admin
+level: core
+title: Provisioning dashboards from files
+prompt: |
+  A platform team wants dashboards checked into git and loaded automatically
+  whenever Grafana starts. Which mechanism supports this?
+options:
+  A: "The provisioning system: dashboard providers are declared in YAML under
+    the provisioning directory, pointing at a folder of dashboard JSON files."
+  B: "Copying dashboard JSON into the Grafana database manually."
+  C: "Saving every dashboard in the browser bookmarks."
+  D: "The dashboard plugin directory."
+answer: A
+explanation: |
+  Grafana provisioning reads YAML provider files (for example
+  provisioning/dashboards/dashboards.yaml) that reference a folder containing
+  dashboard JSON definitions, loading them at startup. This makes dashboards
+  declarative and version-controlled. Database edits, browser bookmarks, and
+  the plugin directory are not the intended mechanisms.

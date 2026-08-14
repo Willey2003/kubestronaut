@@ -1,0 +1,35 @@
+kind: knowledge
+domain: prometheus-architecture
+level: core
+title: Controlling local TSDB retention
+prompt: |
+  An administrator wants to keep Prometheus's local disk usage bounded. Which
+  mechanism directly controls how long raw samples are retained?
+options:
+  A: "The --storage.tsdb.retention.time flag."
+  B: "The scrape_interval setting."
+  C: "The number of alerting rules."
+  D: "The evaluation interval."
+answer: A
+explanation: |
+  Local TSDB retention is set with `--storage.tsdb.retention.time` (and
+  optionally `--storage.tsdb.retention.size`). Scrape and evaluation intervals
+  affect how much data is produced, not how long it is kept.
+solution: |
+  Prometheus stores samples in a local time series database organized into
+  blocks. Retention is controlled with the --storage.tsdb.retention.time flag,
+  which sets how long data is kept, optionally combined with
+  --storage.tsdb.retention.size for a size limit. Older blocks are removed when
+  they fall outside the retention window. The scrape interval determines how
+  frequently samples are collected and the evaluation interval how often rules
+  run, but neither controls how long data is retained. For longer-term storage,
+  remote write is used to forward samples to external systems.
+checks:
+  - desc: Names the retention flag
+    contains: "--storage.tsdb.retention.time"
+  - desc: Mentions the local TSDB
+    contains: "time series database"
+  - desc: Distinguishes the scrape interval
+    contains: "scrape interval"
+  - desc: Mentions remote write
+    contains: "remote write"

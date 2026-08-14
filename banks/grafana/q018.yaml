@@ -1,0 +1,22 @@
+kind: knowledge
+domain: promql-visualization
+level: core
+title: rate versus irate in Grafana panels
+prompt: |
+  For a live, noisy counter, when would an engineer prefer irate() over
+  rate() in a PromQL panel query?
+options:
+  A: "Never - irate() is deprecated and removed."
+  B: "When they want the instantaneous per-second rate between the last two
+    samples, which reacts fast but is noisier, versus rate() which smooths
+    over the whole range window."
+  C: "irate() shows total counts instead of rates."
+  D: "irate() aggregates across all labels while rate() cannot."
+answer: B
+explanation: |
+  rate(metric[5m]) computes the average increase per second across the window,
+  which smooths out short spikes. irate(metric[5m]) computes the rate between
+  the last two samples in the window, giving a fast-reacting but noisier
+  value. Both are valid PromQL; the choice is a trade-off between smoothness
+  and responsiveness. Neither shows totals and neither changes label
+  aggregation behavior.

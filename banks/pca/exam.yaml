@@ -1,0 +1,13 @@
+id: pca
+title: PCA Prometheus Certified Associate Mock
+engine: knowledge
+duration_minutes: 90
+pass_threshold: 0.7
+draw_size: 18
+seed: null
+domains:
+  fundamentals-promql: 0.30
+  metrics-observability: 0.20
+  prometheus-architecture: 0.25
+  exporters-service-discovery: 0.15
+  alerting: 0.10

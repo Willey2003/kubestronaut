@@ -1,0 +1,36 @@
+kind: knowledge
+domain: alerting
+level: core
+title: How Alertmanager reduces noise
+prompt: |
+  The Alertmanager has received many alerts from a noisy group of related
+  services. Which Alertmanager features directly reduce notification spam?
+options:
+  A: "Grouping, inhibition, and silences, combined with routing to receivers."
+  B: "Higher scrape intervals."
+  C: "Longer retention windows."
+  D: "Additional recording rules."
+answer: A
+explanation: |
+  Grouping batches related alerts into one notification, inhibition suppresses
+  lower-priority alerts when higher ones fire, and silences mute alerts
+  temporarily. Routing decides which receivers get which notifications.
+solution: |
+  The Alertmanager handles alerts after they leave the Prometheus server.
+  Grouping merges related alerts into a single notification so an incident that
+  generates many alerts produces one message. Inhibition suppresses
+  lower-severity alerts when a higher-severity alert is already firing,
+  preventing cascade noise. Silences let operators mute alerts for a defined
+  window, for example during maintenance. Routing rules determine which
+  receiver (email, Slack, webhook, PagerDuty) receives which notifications
+  based on alert labels. Changing scrape intervals, retention, or recording
+  rules does not affect how notifications are batched and delivered.
+checks:
+  - desc: Names grouping
+    contains: "Grouping"
+  - desc: Names inhibition
+    contains: "Inhibition"
+  - desc: Names silences
+    contains: "Silences"
+  - desc: Mentions routing to receivers
+    contains: "receiver"

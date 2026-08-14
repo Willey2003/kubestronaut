@@ -1,0 +1,21 @@
+kind: knowledge
+domain: dashboards-panels
+level: core
+title: Panel type for a single current value
+prompt: |
+  An engineer wants a dashboard panel that shows only the latest value of a
+  metric - a big number that fits on an overview screen, optionally with a
+  gauge-style visual or sparkline. Which Grafana panel type is the correct
+  choice for this use case?
+options:
+  A: "The Table panel - it renders the value inside a data grid."
+  B: "The Stat panel - it condenses a query into a single stat or a series of
+    stats with a value, title, and optional sparkline."
+  C: "The Time series panel - it draws every sample as a line across time."
+  D: "The Alert list panel - it shows active alert rules instead of values."
+answer: B
+explanation: |
+  The Stat panel is designed to show one or more current values prominently,
+  supporting sparklines and color thresholds. A Table panel shows a grid, a
+  Time series panel draws full line charts, and the Alert list panel shows
+  firing alerts rather than metric values.

@@ -1,0 +1,20 @@
+kind: knowledge
+domain: provisioning-admin
+level: deep
+title: Authentication backends
+prompt: |
+  Which statement about Grafana authentication is correct?
+options:
+  A: "Grafana only supports local username/password accounts."
+  B: "Grafana supports local auth plus LDAP, OAuth/OIDC providers such as
+    GitHub, Google, and Keycloak, and SSO through a reverse proxy, all
+    configurable in the auth sections of grafana.ini."
+  C: "Authentication is handled entirely by the data sources."
+  D: "Anonymous access cannot be enabled."
+answer: B
+explanation: |
+  Grafana ships with local accounts and can integrate with LDAP, multiple
+  OAuth/OIDC providers, SAML, and proxy auth. These are enabled under the
+  auth sections of grafana.ini (or provisioning files). Data sources do not
+  handle user authentication, and anonymous access is a supported option that
+  can be enabled and restricted.

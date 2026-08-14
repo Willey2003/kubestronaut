@@ -1,0 +1,36 @@
+kind: knowledge
+domain: metrics-observability
+level: core
+title: Turning a counter into a rate
+prompt: |
+  A metric `requests_total` counts HTTP requests and only grows over time. To
+  show requests per second on a dashboard, which is the correct PromQL
+  expression?
+options:
+  A: "rate(requests_total[5m])"
+  B: "requests_total[5m]"
+  C: "requests_total - 1"
+  D: "avg_over_time(requests_total[5m])"
+answer: A
+explanation: |
+  `rate()` computes the per-second increase over a window; the raw counter is
+  a cumulative total, a range vector alone is not a rate, and averaging a
+  cumulative counter is misleading.
+solution: |
+  For a monotonic counter such as `requests_total`, the per-second increase is
+  computed with rate(requests_total[5m]), which takes the cumulative counter
+  values over a five-minute window and returns the average per-second increase
+  per series. Using the raw counter directly produces a cumulative total, and
+  a range vector selector alone returns multiple samples rather than a rate.
+  avg_over_time on a cumulative counter would average raw totals, which does
+  not represent a rate. When a counter is reset, rate() handles the reset
+  correctly, making it the standard way to visualize counter growth.
+checks:
+  - desc: Names the rate function
+    contains: "rate("
+  - desc: Explains the per-second increase
+    contains: "per-second increase"
+  - desc: Mentions counter resets
+    contains: "reset"
+  - desc: Rejects averaging raw totals
+    contains: "avg_over_time"

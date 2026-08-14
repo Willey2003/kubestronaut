@@ -1,0 +1,37 @@
+kind: knowledge
+domain: prometheus-architecture
+level: core
+title: Pull model vs Pushgateway
+prompt: |
+  A team is designing a monitoring architecture and debates whether Prometheus
+  should push or pull metrics from a short-lived batch job. Which statement
+  best reflects Prometheus's model?
+options:
+  A: "Prometheus pulls metrics over HTTP from targets it discovers; the Pushgateway exists for short-lived batch jobs that cannot be scraped in time."
+  B: "Every target must push metrics to Prometheus on a schedule."
+  C: "Prometheus does not support exposing metrics over HTTP."
+  D: "Prometheus pulls only logs, never metrics."
+answer: A
+explanation: |
+  Prometheus is pull-based: it scrapes targets at configured intervals. The
+  Pushgateway is an exception layer for jobs that exit before the next scrape.
+  This design keeps availability checks and scrape timing under Prometheus's
+  control.
+solution: |
+  Prometheus is fundamentally pull-based: it discovers targets and scrapes
+  their HTTP /metrics endpoints on a configured interval. This pull model means
+  Prometheus knows whether a target is up and controls scrape timing. The
+  Pushgateway is a dedicated component for short-lived batch jobs that may
+  terminate before the next scrape; such jobs push their final metrics to the
+  Pushgateway, which then serves them to Prometheus. It is not intended for
+  long-running services. Logs are not part of Prometheus's data model; the pull
+  model collects metrics only.
+checks:
+  - desc: States the pull model
+    contains: "pull-based"
+  - desc: Names the Pushgateway
+    contains: "Pushgateway"
+  - desc: Explains short-lived jobs
+    contains: "short-lived batch jobs"
+  - desc: Notes metrics over HTTP
+    contains: "/metrics endpoints"

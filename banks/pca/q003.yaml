@@ -1,0 +1,35 @@
+kind: knowledge
+domain: fundamentals-promql
+level: core
+title: Instant vs range vectors
+prompt: |
+  A user evaluates `rate(node_network_receive_bytes_total[5m])` and wants to
+  describe the result type and the input type to a colleague. What does this
+  expression take as input and what does it return?
+options:
+  A: "It takes a range vector and returns an instant vector of per-series rates."
+  B: "It takes an instant vector and returns a range vector."
+  C: "It takes a scalar and returns a string."
+  D: "It takes a range vector and returns another range vector."
+answer: A
+explanation: |
+  The range selector `[5m]` produces a range vector; `rate()` computes a
+  per-second increase for each series and returns an instant vector. Instant
+  vectors are the common input for graphs and aggregations.
+solution: |
+  The expression `rate(node_network_receive_bytes_total[5m])` selects a range
+  vector because of the `[5m]` range selector, then the rate() function
+  computes the per-second average rate of increase for each series. The result
+  is an instant vector where each element represents one series with a single
+  value at the evaluation time. An instant vector has one sample per series,
+  while a range vector holds many samples over a time window. A scalar is a
+  single number and a string is text; neither is produced here.
+checks:
+  - desc: Names range vector input
+    contains: "range vector"
+  - desc: Names instant vector output
+    contains: "instant vector"
+  - desc: Mentions the per-second rate
+    contains: "per-second average rate"
+  - desc: Distinguishes scalar
+    contains: "scalar"

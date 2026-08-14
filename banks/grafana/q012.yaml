@@ -1,0 +1,20 @@
+kind: knowledge
+domain: alerting
+level: deep
+title: Alert rule against a multi-dimensional query
+prompt: |
+  A query returns multiple series (one per host). The operator creates an
+  alert rule that thresholds the metric. What does Grafana do with the
+  multiple series?
+options:
+  A: "It errors because alert rules can only accept a single series."
+  B: "It evaluates the condition against every series independently, so each
+    series can transition to firing on its own."
+  C: "It averages all series into one before evaluating."
+  D: "It only evaluates the first series returned."
+answer: B
+explanation: |
+  Grafana alert rules evaluate the query result series by series (or grouped
+  by the configured grouping labels). Each series is evaluated against the
+  condition independently, so one host can fire while others stay normal.
+  Averaging or picking the first series would hide per-instance problems.

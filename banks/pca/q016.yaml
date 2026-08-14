@@ -1,0 +1,35 @@
+kind: knowledge
+domain: exporters-service-discovery
+level: core
+title: The text exposition format
+prompt: |
+  A target's /metrics page contains the line
+  `http_requests_total{method="get",code="200"} 1027`. What does this line
+  encode?
+options:
+  A: "A sample: metric name http_requests_total, labels method and code, value 1027."
+  B: "A log entry with timestamp 1027."
+  C: "An alert rule definition."
+  D: "A configuration directive for Prometheus."
+answer: A
+explanation: |
+  The text exposition format encodes samples as `metric{labels} value`.
+  `# HELP` and `# TYPE` comments describe the metric. The value is 1027; with
+  no timestamp, the scrape time is used.
+solution: |
+  The line `http_requests_total{method="get",code="200"} 1027` is one sample in
+  the Prometheus text exposition format. The metric name is http_requests_total,
+  the label set contains method and code with the given values, and 1027 is the
+  sample value associated with that series. When no timestamp is present,
+  Prometheus assigns the scrape timestamp. Exposition files also carry
+  # HELP and # TYPE comments describing each metric, and exporters use this
+  format on their /metrics endpoints.
+checks:
+  - desc: Names the metric
+    contains: "http_requests_total"
+  - desc: Mentions the label set
+    contains: "label set"
+  - desc: Identifies the sample value
+    contains: "1027"
+  - desc: Mentions HELP and TYPE
+    contains: "# HELP and # TYPE"

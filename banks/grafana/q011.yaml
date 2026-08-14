@@ -1,0 +1,20 @@
+kind: knowledge
+domain: alerting
+level: quick
+title: Contact points and notification policies
+prompt: |
+  An alert fires and the team wants an email plus a Slack message. What must
+  be configured for the notifications to be delivered?
+options:
+  A: "A contact point that bundles the email and Slack integrations, and a
+    notification policy that routes the matching rules to that contact point."
+  B: "Only a Slack webhook, because email is configured automatically."
+  C: "A new dashboard with an alert panel."
+  D: "Nothing - alerting emails are sent by default to every admin."
+answer: A
+explanation: |
+  In Grafana alerting, receivers are defined as contact points (email, Slack,
+  webhook, PagerDuty, and so on), and notification policies decide which rules
+  notify which contact points, including nested routes, grouping, and repeat
+  timing. Slack alone is not enough for email, alert panels do not send
+  notifications, and nothing is delivered without a configured contact point.

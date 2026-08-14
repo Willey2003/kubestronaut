@@ -1,0 +1,18 @@
+kind: knowledge
+domain: provisioning-admin
+level: quick
+title: Main Grafana configuration file
+prompt: |
+  Which file holds Grafana's primary server configuration such as HTTP port,
+  data path, and server name?
+options:
+  A: "grafana.ini (with defaults also shipped as defaults.ini)."
+  B: "prometheus.yml."
+  C: "kubeconfig."
+  D: "grafana.db only."
+answer: A
+explanation: |
+  Grafana's settings live in grafana.ini; the default values are also shipped
+  as defaults.ini which grafana.ini overrides. prometheus.yml is the
+  Prometheus scrape configuration, kubeconfig is unrelated, and grafana.db is
+  the SQLite database, not the settings file.

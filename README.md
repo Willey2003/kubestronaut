@@ -40,7 +40,9 @@ Open <http://127.0.0.1:8901> (or the LAN address after `./ga expose`).
 | `cks` | Certified Kubernetes Security Specialist | hands-on |
 | `kcna` | Kubernetes and Cloud Native Associate | knowledge |
 | `kcsa` | Kubernetes and Cloud Native Security Associate | mixed |
-| `cpna` | Cloud Native / Prometheus monitoring (Prometheus + Grafana) | mixed |
+| `cpna` | Cloud Native monitoring (Prometheus + Grafana) | mixed |
+| `pca` | Prometheus Certified Associate | knowledge |
+| `grafana` | Grafana dashboards and observability | knowledge |
 
 See `docs/` for architecture, bank spec, install, and security.
 

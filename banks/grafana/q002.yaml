@@ -1,0 +1,23 @@
+kind: knowledge
+domain: dashboards-panels
+level: core
+title: Time series downsampling over a wide range
+prompt: |
+  A dashboard shows a full month of Prometheus data at 15-second scrape
+  resolution. The engineer notices the raw samples are not all drawn and the
+  graph looks smooth. What is Grafana doing to render this?
+options:
+  A: "It drops samples that are too large for the canvas - visualization only
+    keeps the first N points."
+  B: "It queries fewer points by aggregating raw samples over wider intervals,
+    for example taking averages per interval, so the number of points stays
+    within the panel's limits."
+  C: "It is caching an old graph from the first page load and never refetches."
+  D: "It samples every 100th data point at random, discarding the rest."
+answer: B
+explanation: |
+  Grafana downsamples (aggregates) data over the queried range. The query
+  interval widens as the time range grows so the returned point count stays
+  manageable, which is why wide ranges look smooth even when the underlying
+  scrape resolution is much finer. Random sampling or point dropping would
+  distort the graph; caching alone would show stale data.

@@ -1,0 +1,34 @@
+kind: knowledge
+domain: prometheus-architecture
+level: core
+title: Purpose of recording rules
+prompt: |
+  A team repeatedly runs an expensive aggregation in dashboards and alerts.
+  What is the recommended way to keep this maintainable?
+options:
+  A: "Precompute the result with a recording rule and query the new time series."
+  B: "Duplicate the expensive query in every panel."
+  C: "Store the raw logs and stop using PromQL."
+  D: "Run the query manually whenever needed."
+answer: A
+explanation: |
+  Recording rules evaluate an expression periodically and store the result as a
+  new series, so dashboards and alerts query a cheap precomputed series instead
+  of the heavy expression.
+solution: |
+  Recording rules evaluate a PromQL expression on the rule evaluation interval
+  and store the result as a new time series. Replacing an expensive aggregation
+  with a recording rule means dashboards and alerts query a precomputed, cheap
+  series instead of recomputing the heavy expression on every evaluation. This
+  also centralizes the logic in one place. Recording rules are declared in rule
+  files and applied by the Prometheus server. They are distinct from alerting
+  rules, which fire notifications when an expression becomes true.
+checks:
+  - desc: Names recording rules
+    contains: "Recording rules"
+  - desc: Mentions the precomputed series
+    contains: "precomputed"
+  - desc: Notes the evaluation interval
+    contains: "evaluation interval"
+  - desc: Distinguishes alerting rules
+    contains: "distinct from alerting"

@@ -1,0 +1,38 @@
+kind: knowledge
+domain: fundamentals-promql
+level: core
+title: What uniquely identifies a time series
+prompt: |
+  A junior engineer sees the same host represented as two different graphs in
+  Grafana and suspects duplicate metrics. They want to understand exactly what
+  distinguishes one Prometheus time series from another. Which pair of
+  identifiers uniquely defines a single time series in Prometheus?
+options:
+  A: "The metric name together with the complete set of labels."
+  B: "The metric name together with the most recent sample value."
+  C: "The timestamp of the last scrape."
+  D: "The combination of job name and instance port only."
+answer: A
+explanation: |
+  A time series in Prometheus is identified by the metric name plus the label
+  set; each sample is a (timestamp, value) pair appended to that series.
+  Changing a label creates a new series, while job and instance are just
+  ordinary labels.
+solution: |
+  In Prometheus, a unique time series is identified by the metric name together
+  with the complete set of labels, meaning the collection of label name/value
+  pairs. The metric name plus the label set forms the series identity, and
+  every sample recorded is a (timestamp, value) pair appended to that series.
+  If any label is added, removed, or changed, a new time series is created.
+  The job and instance labels are ordinary labels commonly attached by
+  exporters; they are not special identifiers. Sample values and timestamps
+  never define the series identity.
+checks:
+  - desc: Names the metric name as part of the identity
+    contains: "metric name"
+  - desc: Names the label set
+    contains: "label set"
+  - desc: Describes series identity
+    contains: "series identity"
+  - desc: Notes samples are timestamp/value pairs
+    contains: "(timestamp, value) pair"

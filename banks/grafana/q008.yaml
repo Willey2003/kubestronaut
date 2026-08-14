@@ -1,0 +1,22 @@
+kind: knowledge
+domain: data-sources
+level: core
+title: Adding a Prometheus data source
+prompt: |
+  An administrator has a Prometheus server at http://10.0.0.5:9090 and wants
+  dashboards to query it. What is the correct way to register it in Grafana?
+options:
+  A: "Configuration > Data sources > Add data source > Prometheus, then set
+    the URL to http://10.0.0.5:9090 and Save & test."
+  B: "Create a dashboard and paste the Prometheus URL into every panel query."
+  C: "Restart Grafana with an environment variable PROM_URL and it is picked
+    up automatically."
+  D: "Add the target to the Prometheus server's own scrape config."
+answer: A
+explanation: |
+  Data sources are registered centrally under Configuration > Data sources.
+  Adding a Prometheus data source requires the server URL; Grafana then runs
+  the health check via Save & test. Pasting the URL into each query is not how
+  Grafana binds panels to a backend, restarting with an environment variable
+  is not a supported mechanism, and Prometheus scrape configs govern what
+  Prometheus collects, not what Grafana can query.

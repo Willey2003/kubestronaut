@@ -1,0 +1,35 @@
+kind: knowledge
+domain: exporters-service-discovery
+level: core
+title: Service discovery in Kubernetes
+prompt: |
+  A cluster team deploys Prometheus in Kubernetes and wants new pods to be
+  scraped automatically as they appear. Which approach enables this?
+options:
+  A: "Configure Kubernetes service discovery (kubernetes_sd) so Prometheus discovers pods and services via the Kubernetes API."
+  B: "Manually edit prometheus.yaml every time a pod is created."
+  C: "Require every workload to push metrics to a central endpoint."
+  D: "Point all scrapes at localhost."
+answer: A
+explanation: |
+  kubernetes_sd lets Prometheus watch the Kubernetes API and discover
+  endpoints, pods, services, and nodes dynamically. file_sd, DNS SD, and cloud
+  SD are alternative mechanisms for other environments.
+solution: |
+  Kubernetes service discovery (kubernetes_sd) allows Prometheus to watch the
+  Kubernetes API and continuously discover scrape targets such as pods,
+  endpoints, services, and nodes, so new workloads appear in the target list
+  without manual configuration. Prometheus supports several discovery
+  mechanisms: file_sd reads target files from disk, dns_sd resolves SRV
+  records, and cloud integrations discover instances from providers. Manually
+  editing the config for every new pod does not scale, and the pull model
+  expects Prometheus to reach the targets itself.
+checks:
+  - desc: Names kubernetes_sd
+    contains: "kubernetes_sd"
+  - desc: Mentions the Kubernetes API
+    contains: "Kubernetes API"
+  - desc: Lists alternative mechanisms
+    contains: "file_sd"
+  - desc: Notes dynamic discovery
+    contains: "continuously discover"

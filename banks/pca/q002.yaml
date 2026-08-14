@@ -1,0 +1,35 @@
+kind: knowledge
+domain: fundamentals-promql
+level: core
+title: Label matching operators in selectors
+prompt: |
+  An SRE writes the query `http_requests_total{method=~"GET|POST", code="200"}`
+  to inspect a panel. They are unsure how the `=~` operator behaves compared
+  with `=`. Which statement correctly describes the `=~` operator in a PromQL
+  selector?
+options:
+  A: "=~ matches the label value using a regular expression, while = requires an exact match."
+  B: "=~ matches only when the value is numerically greater than the pattern."
+  C: "=~ negates the match and selects series where the label does not exist."
+  D: "=~ performs a case-insensitive exact string comparison."
+answer: A
+explanation: |
+  In selectors, `=` is exact equality, `!=` is not-equal, `=~` matches a label
+  against a regular expression (RE2), and `!~` negates a regex match.
+  `{method=~"GET|POST"}` selects series whose method label is GET or POST.
+solution: |
+  In a PromQL selector, `=~` matches the label value against an RE2-compatible
+  regular expression and selects the series when the value matches the pattern,
+  whereas `=` requires the label value to be exactly equal to the given string.
+  The companion operators are `!=` for not-equal and `!~` for negated regex
+  matching. So the selector `http_requests_total{method=~"GET|POST"}` picks up
+  every series whose method label is either GET or POST.
+checks:
+  - desc: Contrasts regex with exact matching
+    contains: "regular expression"
+  - desc: Notes the exact match operator
+    contains: "exactly equal"
+  - desc: Mentions the negation operators
+    contains: "!~"
+  - desc: Gives a concrete example
+    contains: "GET or POST"

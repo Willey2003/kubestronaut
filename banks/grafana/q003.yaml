@@ -1,0 +1,21 @@
+kind: knowledge
+domain: dashboards-panels
+level: quick
+title: Dashboard versus panel relationship
+prompt: |
+  A new teammate asks for the simplest description of how Grafana organizes
+  content. Which statement best captures the relationship between dashboards
+  and panels?
+options:
+  A: "A panel is a container that holds one or more dashboards."
+  B: "A dashboard is a collection of panels arranged on a grid, and each panel
+    visualizes data from one or more queries against a data source."
+  C: "Panels can only be added through the provisioning files, never through
+    the web UI."
+  D: "Each dashboard is limited to exactly one panel and one data source."
+answer: B
+explanation: |
+  Grafana organizes visualizations as panels - each rendering one or more
+  queries - grouped together inside dashboards laid out on a grid. Panels are
+  created and edited in the UI (or via provisioning), and a dashboard can mix
+  panels that query different data sources.

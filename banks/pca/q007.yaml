@@ -1,0 +1,35 @@
+kind: knowledge
+domain: metrics-observability
+level: core
+title: The RED method
+prompt: |
+  An engineer describes their request-based monitoring setup as "RED." Which
+  set of metrics is the RED method built on?
+options:
+  A: "Rate, errors, and duration."
+  B: "Reliability, efficiency, and defects."
+  C: "Requests, entities, and data."
+  D: "Retries, exports, and drops."
+answer: A
+explanation: |
+  RED stands for Rate, Errors, and Duration and is aimed at request-based
+  services. USE (Utilization, Saturation, Errors) is the counterpart aimed at
+  hardware resources.
+solution: |
+  The RED method stands for Rate, Errors, and Duration. Rate measures requests
+  per second flowing through a service, errors measures the rate of failed
+  requests, and duration measures the time taken to serve requests, usually
+  expressed as a distribution with percentiles. RED is designed for
+  request-driven services and complements the USE method, which targets
+  infrastructure resources with utilization, saturation, and errors. It
+  deliberately omits saturation of individual resources because the
+  service-level view is what matters to users.
+checks:
+  - desc: Names rate
+    contains: "Rate"
+  - desc: Names errors
+    contains: "errors"
+  - desc: Names duration
+    contains: "duration"
+  - desc: Contrasts with the USE method
+    contains: "USE"

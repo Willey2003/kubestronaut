@@ -1,0 +1,19 @@
+kind: knowledge
+domain: dashboards-panels
+level: quick
+title: Panel for tabular multi-column data
+prompt: |
+  A query returns multiple columns (instance, method, status, request count).
+  The engineer wants to display it as a sortable grid of rows and columns with
+  per-column formatting. Which panel type fits best?
+options:
+  A: "The Table panel."
+  B: "The Stat panel."
+  C: "The Pie chart panel."
+  D: "The Logs panel."
+answer: A
+explanation: |
+  The Table panel renders query results as rows and columns, supports sorting,
+  column filters, and per-column cell formatting. Stat panels condense to a
+  single value, pie charts show proportions, and the Logs panel is built for
+  log lines.

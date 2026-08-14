@@ -1,0 +1,35 @@
+kind: knowledge
+domain: exporters-service-discovery
+level: core
+title: What node_exporter exposes
+prompt: |
+  A host runs node_exporter and exposes port 9100 /metrics. What kind of data
+  will an operator find there?
+options:
+  A: "Host-level metrics such as CPU, memory, disk, and filesystem usage."
+  B: "Application-level business metrics of a custom web app."
+  C: "Prometheus internal alert history."
+  D: "Kubernetes pod scheduling decisions."
+answer: A
+explanation: |
+  node_exporter exposes OS and hardware metrics for a machine. Custom
+  applications use their own client libraries or exporters, and Prometheus's
+  own metrics live on its own /metrics endpoint.
+solution: |
+  node_exporter exposes host-level metrics about the machine it runs on,
+  including CPU utilization, memory usage, disk and filesystem utilization,
+  network counters, and other operating system statistics, in the Prometheus
+  exposition format on port 9100. Custom application metrics are typically
+  exposed through client libraries or purpose-built exporters, and Prometheus's
+  own internal metrics are served from its own /metrics endpoint. Node-level
+  exporters are commonly paired with Prometheus to monitor infrastructure,
+  while application monitoring needs dedicated instrumentation.
+checks:
+  - desc: Names host-level metrics
+    contains: "host-level metrics"
+  - desc: Lists CPU and memory
+    contains: "CPU"
+  - desc: Mentions port 9100
+    contains: "9100"
+  - desc: Contrasts application metrics
+    contains: "client libraries"

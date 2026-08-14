@@ -1,0 +1,18 @@
+kind: knowledge
+domain: variables
+level: deep
+title: Variable types
+prompt: |
+  Which list correctly names the variable types Grafana provides?
+options:
+  A: "Query, Constant, Interval, Data source, Custom, Text box."
+  B: "Metric, Label, Panel, Widget, Column."
+  C: "Select, Input, Range, Grid, Theme."
+  D: "Query, Constant, Interval only."
+answer: A
+explanation: |
+  Grafana's supported variable types are Query, Custom, Constant, Interval,
+  Data source, Text box, and Ad hoc (query-filter). They allow dynamic
+  dashboards: query variables pull values from data, intervals control range
+  resolution, and data source variables switch backends. The other options
+  mix in nonexistent types or omit valid ones.

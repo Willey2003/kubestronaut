@@ -1,0 +1,18 @@
+kind: knowledge
+domain: data-sources
+level: quick
+title: Built-in and plugin data sources
+prompt: |
+  Which statement about the data sources Grafana can query is correct?
+options:
+  A: "Grafana can only query Prometheus."
+  B: "Grafana bundles several core data sources such as Prometheus, Loki,
+    InfluxDB, and MySQL, and supports many more through installable plugins."
+  C: "Data sources must be added by editing grafana.ini; there is no UI."
+  D: "Each Grafana instance can connect to exactly one data source at a time."
+answer: B
+explanation: |
+  Grafana ships with core data sources (Prometheus, Loki, MySQL, PostgreSQL,
+  InfluxDB, Elasticsearch, and others) and a plugin ecosystem that adds many
+  more. Data sources are configured through the UI (Configuration > Data
+  sources) or via provisioning, and a single instance can use many at once.

@@ -1,0 +1,35 @@
+kind: knowledge
+domain: metrics-observability
+level: deep
+title: histogram_quantile semantics
+prompt: |
+  The expression `histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))`
+  appears in a dashboard. What does it compute?
+options:
+  A: "The 95th percentile of request duration estimated from the histogram buckets."
+  B: "The average request duration over five minutes."
+  C: "The total number of requests that took longer than 95 seconds."
+  D: "The 5th percentile of request rate."
+answer: A
+explanation: |
+  `rate()` turns the bucket counters into per-second rates, and
+  `histogram_quantile` estimates the 95th percentile (p95) latency from those
+  buckets. It is an estimate because the true quantile is interpolated between
+  bucket boundaries.
+solution: |
+  The expression estimates the 95th percentile of request duration. First,
+  rate() computes the per-second increase of each histogram bucket counter,
+  then histogram_quantile(0.95, ...) interpolates between bucket boundaries to
+  estimate the latency below which 95% of requests fall. The result is a p95
+  latency estimate rather than an exact value, because the histogram only
+  records counts in predefined buckets. It is not an average, not a count of
+  slow requests, and not a percentile of the request rate.
+checks:
+  - desc: Names the percentile
+    contains: "95th percentile"
+  - desc: Mentions bucket interpolation
+    contains: "interpolates"
+  - desc: Says it is an estimate
+    contains: "estimate"
+  - desc: Mentions histogram buckets
+    contains: "buckets"

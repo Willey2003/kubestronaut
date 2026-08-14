@@ -1,0 +1,20 @@
+kind: knowledge
+domain: data-sources
+level: deep
+title: Prometheus query language in Grafana
+prompt: |
+  A panel is connected to a Prometheus data source. The engineer wants the
+  per-second request rate over the last five minutes and must type the query
+  manually. Which expression is correct?
+options:
+  A: "sum(rate(http_requests_total[5m]))"
+  B: "sum(http_requests_total) / 300"
+  C: "http_requests_total > rate(5m)"
+  D: "count(http_requests_total{rate})"
+answer: A
+explanation: |
+  Grafana passes PromQL straight to the Prometheus data source. rate() turns a
+  counter into a per-second increase over the given range window, and sum()
+  aggregates across labels. Dividing a raw counter by seconds does not
+  correct for resets and yields the wrong semantics, and the other forms are
+  not valid PromQL.

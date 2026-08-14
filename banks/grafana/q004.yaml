@@ -1,0 +1,19 @@
+kind: knowledge
+domain: dashboards-panels
+level: deep
+title: Thresholds and gradient coloring
+prompt: |
+  An operator wants a graph where the line turns red when a metric crosses a
+  critical threshold and returns to green below it. Which panel feature makes
+  this possible?
+options:
+  A: "Panel thresholds with color modes applied to the series."
+  B: "The legend grouping options only."
+  C: "The dashboard JSON model's 'refresh' setting."
+  D: "The data source's authentication headers."
+answer: A
+explanation: |
+  Thresholds define value boundaries, and their color mode (e.g. line color,
+  background, or classic thresholds) tells Grafana how to paint the series
+  when values fall on each side. Legends, refresh timing, and data source
+  auth do not control line coloring.

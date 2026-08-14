@@ -1,0 +1,38 @@
+kind: knowledge
+domain: fundamentals-promql
+level: core
+title: sum by vs sum without
+prompt: |
+  A team runs two jobs, web and api, and wants to aggregate their request
+  counts while paying attention to labels. They are comparing
+  `sum by (job)(...)` and `sum without (job)(...)`. Which statement is correct?
+options:
+  A: "sum by (job) keeps only the job label in the output, while sum without (job) drops job and keeps all other labels."
+  B: "sum by (job) removes the job label and keeps every other label."
+  C: "Both operators produce the same result for any query."
+  D: "sum by (job) sums values over time instead of across series."
+answer: A
+explanation: |
+  `by` keeps only the listed labels in the output; `without` removes the listed
+  labels and retains all others. `without` is often preferred because it does
+  not accidentally collapse series that share other meaningful labels.
+solution: |
+  The aggregation operators `by` and `without` control which labels survive
+  the aggregation. `sum by (job)` groups series by the job label and returns
+  one output series per distinct job value, keeping only that label in the
+  result. `sum without (job)` removes the job label from consideration and
+  aggregates across every distinct combination of the remaining labels, so it
+  keeps all labels except job. Choosing one over the other changes the
+  granularity of the resulting series; `without` is often preferred because it
+  preserves unexpected labels rather than silently discarding them. Neither
+  operator performs aggregation over time; that is what functions such as
+  rate() do.
+checks:
+  - desc: Explains sum by
+    contains: "sum by (job)"
+  - desc: Explains sum without
+    contains: "sum without (job)"
+  - desc: Notes the label retention difference
+    contains: "labels survive"
+  - desc: Distinguishes time aggregation
+    contains: "rate()"

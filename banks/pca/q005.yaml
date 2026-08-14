@@ -1,0 +1,37 @@
+kind: knowledge
+domain: fundamentals-promql
+level: core
+title: Counter vs gauge semantics
+prompt: |
+  An operator monitors the number of currently active TCP connections on a
+  host. The value can go up and down, and zero is a meaningful reading. Which
+  Prometheus metric type and query approach fit this scenario?
+options:
+  A: "A gauge, because it can increase and decrease and its current value is meaningful."
+  B: "A counter, because counters count events."
+  C: "A histogram, because histograms summarize buckets."
+  D: "A summary, because summaries compute quantiles on the client."
+answer: A
+explanation: |
+  Gauges represent values that can rise and fall, such as active connections,
+  temperature, or queue depth. Counters only increase and are meant for rate
+  computation. Histograms and summaries describe distributions.
+solution: |
+  Active TCP connections can increase and decrease, and the current value at
+  any instant is meaningful, so it should be exposed as a gauge. A gauge is a
+  metric type whose value can rise or fall arbitrarily, such as temperature,
+  queue depth, or the number of active connections. A counter only ever
+  increases monotonically and resets to zero on restart, so it is intended for
+  computing rates. Histograms and summaries describe distributions of
+  measurements rather than a single instantaneous value. To monitor the
+  connection count, an operator would query the gauge directly or alert on its
+  current value.
+checks:
+  - desc: Names the gauge type
+    contains: "gauge"
+  - desc: Explains counters are monotonic
+    contains: "monotonically"
+  - desc: Mentions histograms and summaries
+    contains: "Histograms and summaries"
+  - desc: References the current value
+    contains: "current value"

@@ -1,0 +1,36 @@
+kind: knowledge
+domain: metrics-observability
+level: core
+title: The four golden signals
+prompt: |
+  Google's SRE book describes four golden signals for monitoring user-facing
+  systems. Which set of four does it recommend?
+options:
+  A: "Latency, traffic, errors, and saturation."
+  B: "CPU, memory, disk, and network."
+  C: "Rate, errors, duration, and cost."
+  D: "Availability, reliability, capacity, and throughput."
+answer: A
+explanation: |
+  The four golden signals are latency (time to serve), traffic (demand),
+  errors (failed requests), and saturation (how full the service is). Option B
+  is the host resource quartet, C is the RED method, and D mixes reliability
+  concepts.
+solution: |
+  The four golden signals are latency, traffic, errors, and saturation.
+  Latency measures the time taken to serve a request, traffic measures the
+  demand or throughput placed on the system, errors represent requests that
+  fail, and saturation reflects how full the service or its resources are.
+  Together they give a high-level view of a user-facing service. Host-level
+  metrics such as CPU, memory, disk, and network are useful but are lower-level
+  than the golden signals, and the RED method is a related but different
+  framing focused on request-based systems.
+checks:
+  - desc: Lists latency
+    contains: "latency"
+  - desc: Lists traffic
+    contains: "traffic"
+  - desc: Lists errors
+    contains: "errors"
+  - desc: Lists saturation
+    contains: "saturation"

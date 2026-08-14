@@ -1,0 +1,34 @@
+kind: knowledge
+domain: alerting
+level: core
+title: When an alerting rule fires
+prompt: |
+  A team defines an alerting rule with an expression, labels, and annotations.
+  What triggers the alert to fire?
+options:
+  A: "When the expression evaluates to a non-empty result on the rule evaluation interval."
+  B: "When Prometheus is first installed."
+  C: "When the target stops exposing /metrics."
+  D: "When a recording rule is deleted."
+answer: A
+explanation: |
+  An alerting rule fires when its expression yields at least one element at
+  evaluation time; for example `up == 0` fires when a target is down. Labels
+  and annotations carry metadata about the alert.
+solution: |
+  An alerting rule fires whenever its PromQL expression returns a non-empty
+  result during the rule evaluation interval. For example, an expression such
+  as up == 0 returns elements for every down target, which causes the alert to
+  fire for those targets. The rule's labels and annotations attach useful
+  context such as severity and a message to the alert. The alert then
+  transitions through pending and firing states before the Alertmanager is
+  notified, and the rule keeps firing as long as the condition remains true.
+checks:
+  - desc: Names the firing condition
+    contains: "non-empty"
+  - desc: Mentions the evaluation interval
+    contains: "evaluation interval"
+  - desc: Notes labels and annotations
+    contains: "annotations"
+  - desc: Mentions Alertmanager notification
+    contains: "Alertmanager"

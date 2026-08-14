@@ -1,0 +1,20 @@
+kind: knowledge
+domain: dashboards-panels
+level: core
+title: The auto interval variable
+prompt: |
+  A Prometheus query in a panel uses $__interval. What does Grafana substitute
+  for this variable at query time?
+options:
+  A: "The fixed scrape interval hardcoded in the data source settings."
+  B: "A recommended interval calculated from the panel's time range and width,
+    used to downsample and to build range vectors such as rate(metric[$__interval])."
+  C: "The interval configured on the Alert rule only."
+  D: "A constant 60s no matter the zoom level."
+answer: B
+explanation: |
+  $__interval is computed per panel from the visible time range and the number
+  of pixels, so zooming in gives finer intervals and zooming out coarser ones.
+  It is designed for rate() and aggregation windows that should adapt to the
+  current view. It is not tied to the scrape interval or alert rules, and it
+  is never a fixed 60s.

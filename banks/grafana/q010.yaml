@@ -1,0 +1,21 @@
+kind: knowledge
+domain: alerting
+level: core
+title: Unified alerting evaluation
+prompt: |
+  How does Grafana's unified alerting determine whether an alert rule fires?
+options:
+  A: "Rules are evaluated on the dashboard's auto-refresh interval."
+  B: "Each rule defines a query plus a condition, and Grafana evaluates it on
+    its own evaluation interval against the configured data source, moving
+    the rule through pending to firing as the condition is met."
+  C: "Rules fire immediately whenever the panel is opened by a user."
+  D: "Rules only fire when the metric equals zero."
+answer: B
+explanation: |
+  Unified alerting decouples rules from dashboards: each rule has a query and
+  an evaluation condition, and Grafana's evaluation engine runs it on the
+  configured interval regardless of whether anyone is viewing a dashboard. A
+  rule can transition through pending state before firing to avoid flapping.
+  Panel refresh, page views, and a fixed zero-value check do not drive
+  alerting.

@@ -1,0 +1,14 @@
+id: grafana
+title: Grafana Dashboards and Observability Mock
+engine: knowledge
+duration_minutes: 90
+pass_threshold: 0.7
+draw_size: 18
+seed: null
+domains:
+  dashboards-panels: 0.35
+  data-sources: 0.15
+  alerting: 0.15
+  provisioning-admin: 0.15
+  variables: 0.10
+  promql-visualization: 0.10
