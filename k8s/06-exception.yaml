@@ -8,6 +8,9 @@ spec:
     - policyName: require-secure-deployments
       ruleNames:
         - disallow-root-user
+        - autogen-disallow-root-user
+        - require-resource-limits
+        - autogen-require-resource-limits
   match:
     any:
       - resources:
