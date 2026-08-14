@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: facilitator
+  namespace: kubestronaut
+  labels:
+    app: facilitator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: facilitator
+  template:
+    metadata:
+      labels:
+        app: facilitator
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: borg
+      containers:
+        - name: facilitator
+          image: 10.198.1.19:5101/facilitator:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8900
+              hostPort: 8901
+          env:
+            - name: GA_BANKS
+              value: /app/banks
+            - name: GA_STATE
+              value: /app/state
+            - name: GA_CONDUCTOR
+              value: http://conductor:9001
+            - name: GA_ADDR
+              value: 0.0.0.0
+            - name: GA_PORT
+              value: "8900"
+          volumeMounts:
+            - name: state
+              mountPath: /app/state
+          resources:
+            limits: {memory: 512Mi, cpu: "0.5"}
+            requests: {memory: 256Mi, cpu: "0.1"}
+      volumes:
+        - name: state
+          persistentVolumeClaim:
+            claimName: ga-state
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: facilitator
+  namespace: kubestronaut
+spec:
+  selector:
+    app: facilitator
+  ports:
+    - port: 8900
+      targetPort: 8900

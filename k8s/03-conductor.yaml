@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: conductor
+  namespace: kubestronaut
+  labels:
+    app: conductor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: conductor
+  template:
+    metadata:
+      labels:
+        app: conductor
+    spec:
+      serviceAccountName: conductor
+      nodeSelector:
+        kubernetes.io/hostname: borg
+      containers:
+        - name: conductor
+          image: 10.198.1.19:5101/conductor:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 9001
+          env:
+            - name: GA_BANKS
+              value: /app/banks
+            - name: GA_STATE
+              value: /app/state
+            - name: GA_CLUSTER
+              value: local
+          volumeMounts:
+            - name: state
+              mountPath: /app/state
+          resources:
+            limits: {memory: 512Mi, cpu: "0.5"}
+            requests: {memory: 256Mi, cpu: "0.1"}
+      volumes:
+        - name: state
+          persistentVolumeClaim:
+            claimName: ga-state
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: conductor
+  namespace: kubestronaut
+spec:
+  selector:
+    app: conductor
+  ports:
+    - port: 9001
+      targetPort: 9001
