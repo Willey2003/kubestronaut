@@ -1,0 +1,21 @@
+kind: knowledge
+domain: cluster-hardening
+level: quick
+title: How to stop a ServiceAccount token from being mounted
+prompt: |
+  A stateless workload never talks to the Kubernetes API server. The default
+  ServiceAccount token is still projected into every pod at
+  `/var/run/secrets/kubernetes.io/serviceaccount`. What is the recommended way
+  to prevent the token from being mounted?
+options:
+  A: "Set `automountServiceAccountToken: false` in the pod template spec"
+  B: "Delete the ServiceAccount resource that the pod references"
+  C: "Add the label `kubernetes.io/no-token: \"true\"` to the pod"
+  D: "Set `imagePullPolicy: IfNotPresent` on every container"
+answer: A
+explanation: |
+  Setting `automountServiceAccountToken: false` on the Pod spec (or on the
+  ServiceAccount spec, which is inherited by pods referencing it) stops the
+  projected token from being mounted. Deleting the ServiceAccount does not
+  remove the default token mount and breaks the workload; there is no such
+  label, and imagePullPolicy has nothing to do with token mounting.

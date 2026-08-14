@@ -1,0 +1,22 @@
+kind: knowledge
+domain: threat-modeling
+level: core
+title: Which term names every place an attacker can enter a system
+prompt: |
+  An architect wants to enumerate every entry point where an untrusted actor
+  could interact with a Kubernetes-native application, including the API
+  server, the ingress controller, and exposed pod ports. Which concept is being
+  documented?
+options:
+  A: Attack surface
+  B: Trust boundary
+  C: Data classification
+  D: Threat intelligence
+answer: A
+explanation: |
+  The attack surface is the sum of all entry points through which an attacker
+  can enter or extract data from a system; reducing it (for example with
+  network segmentation) lowers exposure. A trust boundary marks where the
+  trust level changes and every interaction crossing it must be re-validated,
+  while data classification labels sensitivity and threat intelligence feeds
+  known adversary behaviour into the model.

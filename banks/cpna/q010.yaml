@@ -1,0 +1,24 @@
+kind: hands-on
+domain: prometheus-fundamentals
+level: deep
+title: Rate of user-mode CPU
+prompt: |
+  Write a single PromQL query into the file answer.txt that reports the
+  average per-second rate of user-mode CPU usage over the last five minutes
+  from the counter node_cpu_seconds_total. Your query must use rate() with
+  a range vector and must restrict the result to mode="user".
+solution: |
+  rate(node_cpu_seconds_total{mode="user"}[5m])
+checks:
+  - desc: The query uses rate()
+    run: grep -q 'rate(' answer.txt && echo OK || echo MISSING
+    equals: OK
+  - desc: The query references node_cpu_seconds_total
+    run: grep -q 'node_cpu_seconds_total' answer.txt && echo OK || echo MISSING
+    equals: OK
+  - desc: The query restricts to user mode
+    run: grep -q 'mode="user"' answer.txt && echo OK || echo MISSING
+    equals: OK
+  - desc: The query has a range vector window
+    run: grep -qE '\[[0-9]+(s|m|h|d)\]' answer.txt && echo OK || echo MISSING
+    equals: OK

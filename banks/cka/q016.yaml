@@ -1,0 +1,23 @@
+kind: hands-on
+domain: troubleshooting
+level: core
+title: Restore a NotReady node
+prompt: |
+  Node `worker1` is reporting NotReady. Diagnose the node with kubectl and
+  inspect the kubelet. The kubelet service is stopped; start it and enable it
+  to start at boot so the node returns to Ready.
+solution: |
+  kubectl describe node worker1
+  kubectl get events --field-selector involvedObject.kind=Node
+  systemctl start kubelet
+  systemctl enable kubelet
+checks:
+  - desc: Node worker1 reports Ready
+    run: kubectl get node worker1 -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}'
+    equals: "True"
+  - desc: Node worker1 exists
+    run: kubectl get node worker1 -o name
+    equals: node/worker1
+  - desc: kubelet is active
+    run: systemctl is-active kubelet
+    equals: active

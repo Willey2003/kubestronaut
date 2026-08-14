@@ -1,0 +1,34 @@
+kind: hands-on
+domain: microservice-vulns
+level: quick
+title: Deny all traffic with a default-deny NetworkPolicy
+prompt: |
+  Namespace `lab-netpol` exists and currently has no network policy. Create a
+  NetworkPolicy named `default-deny` in `lab-netpol` that denies ALL ingress
+  and ALL egress traffic to and from every pod in the namespace.
+solution: |
+  cat <<'EOF' | kubectl apply -f -
+  apiVersion: networking.k8s.io/v1
+  kind: NetworkPolicy
+  metadata:
+    name: default-deny
+    namespace: lab-netpol
+  spec:
+    podSelector: {}
+    policyTypes:
+      - Ingress
+      - Egress
+  EOF
+checks:
+  - desc: NetworkPolicy default-deny exists in lab-netpol
+    run: kubectl -n lab-netpol get networkpolicy default-deny -o name
+    equals: networkpolicy.networking.k8s.io/default-deny
+  - desc: Policy selects every pod in the namespace
+    run: kubectl -n lab-netpol get networkpolicy default-deny -o jsonpath='{.spec.podSelector.matchLabels.app}'
+    equals: ""
+  - desc: Policy applies to ingress traffic
+    run: kubectl -n lab-netpol get networkpolicy default-deny -o jsonpath='{.spec.policyTypes}'
+    contains: Ingress
+  - desc: Policy applies to egress traffic
+    run: kubectl -n lab-netpol get networkpolicy default-deny -o jsonpath='{.spec.policyTypes}'
+    contains: Egress

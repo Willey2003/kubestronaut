@@ -1,0 +1,20 @@
+kind: knowledge
+domain: runtime-security
+level: deep
+title: Which action should come first during a suspected container compromise
+prompt: |
+  Falco reports that a production pod is spawning a shell and exfiltrating
+  data over the network. Following incident response best practice, what should
+  the on-call engineer do first?
+options:
+  A: Contain the workload to stop the ongoing impact
+  B: Delete the audit logs to free disk space
+  C: Notify all users before assessing the blast radius
+  D: Rebuild the image without investigating the compromise
+answer: A
+explanation: |
+  Incident response follows contain, investigate, eradicate, then recover:
+  halting the ongoing impact (for example scaling the Deployment to zero or
+  applying a NetworkPolicy) is the first priority. Preserving logs is essential
+  for forensics, so deleting them is harmful; broadcasting without containment
+  and rebuilding blindly both lose evidence and let the compromise continue.

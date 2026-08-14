@@ -1,0 +1,13 @@
+id: cka
+title: CKA Administrator Mock
+engine: mixed
+duration_minutes: 120
+pass_threshold: 0.66
+draw_size: 16
+seed: null
+domains:
+  cluster-architecture: 0.20
+  workloads-scheduling: 0.30
+  services-networking: 0.25
+  storage: 0.10
+  troubleshooting: 0.15

@@ -1,0 +1,22 @@
+kind: knowledge
+domain: microservice-vulns
+level: core
+title: How to enforce mTLS at the ingress
+prompt: |
+  A front-end service must only accept traffic from clients that present a
+  certificate issued by the company CA, and the connection to the client must
+  be encrypted. Which approach terminates the TLS and verifies the client
+  certificate at the ingress?
+options:
+  A: "A plain Ingress with `spec.tls.secretName` pointing at the server certificate"
+  B: "An NGINX Ingress with the `nginx.ingress.kubernetes.io/auth-tls-secret` annotation containing the client CA"
+  C: "Annotating the Service with `service.beta.kubernetes.io/mtls: \"true\"`"
+  D: "Setting `clientCAFile` in the Pod's `securityContext`"
+answer: B
+explanation: |
+  `auth-tls-secret` names the secret holding the CA used to verify client
+  certificates, so the ingress controller performs mutual TLS: it terminates
+  the encrypted connection and rejects clients without a trusted certificate.
+  `spec.tls.secretName` only enables server-side TLS and does not authenticate
+  the client. No such Service annotation exists, and `securityContext` has no
+  `clientCAFile` field.

@@ -1,0 +1,25 @@
+kind: knowledge
+domain: observability-fundamentals
+level: quick
+title: Metrics, logs, and traces
+prompt: |
+  An SRE team wants a lightweight signal that can be alerted on, aggregated
+  across a fleet, and retained cheaply for long periods to answer "has
+  request latency regressed this quarter?" Which of the observability
+  pillars is best suited to this task?
+options:
+  A: Logs — every line is a full, human-readable event record.
+  B: Metrics — numeric samples of the same value over time that aggregate
+    well, graph cheaply, and are the natural fit for alerting.
+  C: Traces — they capture the full path of a single request across
+    services.
+  D: Distributed profiling — sampled call stacks of running processes.
+answer: B
+explanation: |
+  Metrics are numeric time series: the same measurement (for example,
+  request latency) sampled at regular intervals, which makes them easy to
+  aggregate, summarize, and alert on. Logs are unstructured event records
+  and traces are request-scoped journeys; both are far more expensive to
+  store at scale and are best used after a metric has signalled a problem.
+  That is why the metric pillar underpins alerting and long-term trend
+  analysis.

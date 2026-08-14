@@ -1,0 +1,39 @@
+kind: hands-on
+domain: workloads-scheduling
+level: deep
+title: Schedule a pod onto a tainted node
+prompt: |
+  Add a taint `dedicated=monitoring:NoSchedule` to node `worker2`. Then create
+  a Pod named `monitor` in namespace `practice` (image `nginx`) with a
+  toleration that matches the taint so it can be scheduled on `worker2`.
+solution: |
+  kubectl taint node worker2 dedicated=monitoring:NoSchedule
+  cat <<'EOF' | kubectl apply -f -
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: monitor
+    namespace: practice
+  spec:
+    containers:
+      - name: monitor
+        image: nginx
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: monitoring
+        effect: NoSchedule
+  EOF
+checks:
+  - desc: Node worker2 carries the dedicated taint
+    run: kubectl get node worker2 -o jsonpath='{.spec.taints[?(@.key=="dedicated")].effect}'
+    equals: NoSchedule
+  - desc: Pod monitor exists in practice
+    run: kubectl -n practice get pod monitor -o name
+    equals: pod/monitor
+  - desc: Pod tolerates the dedicated taint
+    run: kubectl -n practice get pod monitor -o jsonpath='{.spec.tolerations[?(@.key=="dedicated")].effect}'
+    equals: NoSchedule
+  - desc: Pod is scheduled on a node
+    run: kubectl -n practice get pod monitor -o jsonpath='{.spec.nodeName}'
+    non-empty: true

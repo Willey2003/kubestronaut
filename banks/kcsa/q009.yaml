@@ -1,0 +1,20 @@
+kind: knowledge
+domain: workload-security
+level: core
+title: Which mechanisms restrict a container's kernel-level system call access
+prompt: |
+  A security review wants to constrain what a containerized process can do at
+  the kernel level, such as blocking dangerous system calls and limiting the
+  capabilities granted to the process. Which mechanisms address this?
+options:
+  A: seccomp profiles and AppArmor
+  B: PersistentVolumeClaims and StorageClasses
+  C: Readiness probes and liveness probes
+  D: NodeSelectors and taints
+answer: A
+explanation: |
+  seccomp profiles filter the system calls a container may make, and AppArmor
+  applies mandatory access control profiles that confine the process; dropping
+  capabilities such as CAP_SYS_ADMIN works alongside them. Storage, probe, and
+  scheduling controls address persistence, health, and placement, not
+  kernel-level isolation.

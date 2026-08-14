@@ -1,0 +1,22 @@
+kind: hands-on
+domain: workloads-scheduling
+level: core
+title: Constrain a Deployment with a nodeSelector
+prompt: |
+  Deployment `web` in namespace `practice` currently runs 3 replicas. Nodes
+  that are suitable for this workload carry the label `disktype=ssd`. Update
+  the Deployment so its pods are only scheduled onto nodes with the label
+  `disktype=ssd`.
+solution: |
+  kubectl patch deployment web -n practice --type merge \
+    -p '{"spec":{"template":{"spec":{"nodeSelector":{"disktype":"ssd"}}}}}'
+checks:
+  - desc: Deployment web exists in practice
+    run: kubectl -n practice get deployment web -o name
+    equals: deployment.apps/web
+  - desc: Deployment uses a nodeSelector for disktype=ssd
+    run: kubectl -n practice get deployment web -o jsonpath='{.spec.template.spec.nodeSelector.disktype}'
+    equals: ssd
+  - desc: Deployment rollout completed successfully
+    run: kubectl -n practice rollout status deployment/web --timeout=60s
+    exit-success: true

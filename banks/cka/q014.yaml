@@ -1,0 +1,56 @@
+kind: hands-on
+domain: storage
+level: core
+title: Bind a PVC and mount it into a Pod
+prompt: |
+  A StorageClass named `standard` is available in the cluster. Create a
+  PersistentVolumeClaim named `data-pvc` in namespace `practice` that requests
+  500Mi and uses storageClassName `standard`. Then create a Pod named
+  `web-storage` (image `nginx`) in namespace `practice` that mounts the claim
+  at the path `/data`.
+solution: |
+  cat <<'EOF' | kubectl apply -f -
+  apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: data-pvc
+    namespace: practice
+  spec:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 500Mi
+    storageClassName: standard
+  EOF
+  cat <<'EOF' | kubectl apply -f -
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: web-storage
+    namespace: practice
+  spec:
+    containers:
+      - name: web-storage
+        image: nginx
+        volumeMounts:
+          - name: data
+            mountPath: /data
+    volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: data-pvc
+  EOF
+checks:
+  - desc: PVC data-pvc uses the standard StorageClass
+    run: kubectl -n practice get pvc data-pvc -o jsonpath='{.spec.storageClassName}'
+    equals: standard
+  - desc: PVC data-pvc is bound
+    run: kubectl -n practice get pvc data-pvc -o jsonpath='{.status.phase}'
+    equals: Bound
+  - desc: Pod web-storage references the claim
+    run: kubectl -n practice get pod web-storage -o jsonpath='{.spec.volumes[0].persistentVolumeClaim.claimName}'
+    equals: data-pvc
+  - desc: Pod mounts the claim at /data
+    run: kubectl -n practice get pod web-storage -o jsonpath='{.spec.containers[0].volumeMounts[0].mountPath}'
+    equals: /data

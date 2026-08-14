@@ -1,0 +1,25 @@
+kind: hands-on
+domain: promql
+level: deep
+title: p95 latency with histogram_quantile
+prompt: |
+  A service exposes http_request_duration_seconds as a histogram. Write a
+  single PromQL query into the file answer.txt that reports the 95th
+  percentile of request latency over the last five minutes. The query must
+  use histogram_quantile(), must sum the per-instance bucket rates with by
+  (le), and must operate on the _bucket series.
+solution: |
+  histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))
+checks:
+  - desc: The query uses histogram_quantile
+    run: grep -q 'histogram_quantile' answer.txt && echo OK || echo MISSING
+    equals: OK
+  - desc: The quantile 0.95 is selected
+    run: grep -q '0.95' answer.txt && echo OK || echo MISSING
+    equals: OK
+  - desc: Bucket series are aggregated with rate
+    run: grep -q '_bucket' answer.txt && grep -q 'rate(' answer.txt && echo OK || echo MISSING
+    equals: OK
+  - desc: Bucket rates are summed by (le) to merge instances
+    run: grep -qE 'by\s*\(le\)' answer.txt && echo OK || echo MISSING
+    equals: OK

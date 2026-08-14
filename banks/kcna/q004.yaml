@@ -1,0 +1,40 @@
+kind: knowledge
+domain: cloud-native-architecture
+level: core
+title: Choosing projects from the CNCF landscape
+prompt: |
+  The team must pick a service mesh and an observability stack for a new
+  platform. Two candidates are incubating CNCF projects with active
+  communities; two are production-proven and hold CNCF graduated status. How
+  should the architect weigh CNCF project maturity when deciding?
+options:
+  A: "Always pick sandbox projects, because new projects have the freshest features."
+  B: "Prefer graduated projects for production needs, while treating sandbox and incubating projects as promising but less proven."
+  C: "Ignore maturity tiers and choose whichever project has the most GitHub stars."
+  D: "Only use projects that never joined the CNCF, to avoid vendor influence."
+answer: B
+explanation: |
+  The CNCF classifies projects as sandbox, incubating, and graduated. Graduated
+  status indicates broad adoption, stable APIs, and proven production use;
+  incubating and sandbox projects are promising but carry more risk. Maturity
+  tiers exist to help adopters judge how much they can rely on a project, so
+  for core production infrastructure the architect should prefer graduated
+  projects.
+solution: |
+  The architect should prefer CNCF graduated projects for production
+  workloads. The CNCF landscape groups projects into sandbox, incubating, and
+  graduated maturity tiers: graduated projects have demonstrated broad
+  adoption, healthy governance, and stable APIs through years of production
+  use. Incubating and sandbox projects are viable for evaluation and early
+  adoption, but they carry higher risk, so the architect should reserve them
+  for non-critical or pilot workloads and favor graduated projects for the
+  platform's core infrastructure.
+checks:
+  - desc: Mentions the graduated tier
+    contains: "graduated"
+  - desc: Mentions sandbox and incubating tiers
+    contains: "incubating"
+  - desc: Mentions the landscape
+    contains: "landscape"
+  - desc: Advises preferring graduated for production
+    contains: "production"

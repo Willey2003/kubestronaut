@@ -1,0 +1,39 @@
+kind: knowledge
+domain: cloud-native-architecture
+level: core
+title: Declarative vs imperative infrastructure management
+prompt: |
+  Two engineers administer the same namespace. One edits Deployments directly
+  with `kubectl edit` and `kubectl scale`, the other keeps YAML manifests in
+  git and applies them with `kubectl apply`. After a conflicting change, the
+  team wants predictable, reviewable infrastructure. Which approach should
+  they standardize on, and why?
+options:
+  A: "Imperative commands, because they are faster and always know the current state."
+  B: "Declarative manifests applied with kubectl apply, because they describe desired state that the API server and controllers reconcile."
+  C: "Editing live objects with kubectl edit, because it updates the object in place."
+  D: "A mixture of imperative create and delete commands, since that matches the scheduler."
+answer: B
+explanation: |
+  Declarative management stores the desired state in version-controlled
+  manifests; `kubectl apply` diffs and merges them into the cluster, and
+  controllers continuously reconcile actual state toward the declared one.
+  Imperative commands (A, C, D) change live objects without recording the
+  change, so the source of truth drifts and rollbacks become guesswork.
+solution: |
+  The team should use declarative manifests stored in version control and
+  applied with `kubectl apply`. A manifest describes the desired state of
+  objects, the API server stores it, and controllers such as the Deployment
+  controller continuously reconcile the cluster toward that state. Because
+  every change is a reviewed diff in git, it is reversible and auditable,
+  whereas imperative commands mutate live objects without persisting intent,
+  which causes drift between what is configured and what actually runs.
+checks:
+  - desc: Names the declarative approach
+    contains: "declarative"
+  - desc: Names kubectl apply
+    contains: "kubectl apply"
+  - desc: Mentions desired state and reconciliation
+    contains: "reconcile"
+  - desc: Contrasts with imperative drift
+    contains: "drift"

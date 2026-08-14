@@ -1,0 +1,40 @@
+kind: knowledge
+domain: observability
+level: core
+title: Prometheus for Kubernetes monitoring
+prompt: |
+  The platform team wants to monitor pod and node metrics and be alerted when
+  error rates or resource use exceed thresholds. They evaluate a pull-based
+  time-series system with exporters and its own alerting component. Which stack
+  matches this description, and how does it collect data in Kubernetes?
+options:
+  A: "Prometheus: it pulls metrics from targets and exporters such as kube-state-metrics and node-exporter, stores time series, and alerts through Alertmanager."
+  B: "A log aggregator that parses console output."
+  C: "A dashboard that only shows container names."
+  D: "A configuration tool with no metric collection."
+answer: A
+explanation: |
+  Prometheus is a pull-based monitoring system: it scrapes HTTP metrics
+  endpoints from applications and exporters (node-exporter for node metrics,
+  kube-state-metrics for Kubernetes object state), stores them as labeled time
+  series, and evaluates alerting rules; Alertmanager handles deduplication,
+  grouping, and routing of alerts. Dashboards are typically rendered with
+  Grafana on top of Prometheus.
+solution: |
+  Prometheus is the standard pull-based monitoring stack for Kubernetes. It
+  scrapes metrics endpoints exposed by applications and by exporters,
+  node-exporter for node-level metrics and kube-state-metrics for the state of
+  cluster objects such as pods and deployments, and stores the samples as
+  labeled time series. PromQL queries drive dashboards and alerting rules; when
+  an alert fires, Alertmanager groups, deduplicates, and routes it to receivers
+  such as Slack or email. The pull model plus service discovery lets
+  Prometheus find scrape targets automatically as pods come and go.
+checks:
+  - desc: Names Prometheus and pull-based scraping
+    contains: "pull"
+  - desc: Mentions exporters such as node-exporter
+    contains: "node-exporter"
+  - desc: Mentions kube-state-metrics
+    contains: "kube-state-metrics"
+  - desc: Mentions Alertmanager for alerting
+    contains: "Alertmanager"

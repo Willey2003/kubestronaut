@@ -1,0 +1,21 @@
+kind: knowledge
+domain: application-design-build
+level: quick
+title: Name the multi-container pattern for a log shipper
+prompt: |
+  A main container writes log lines to a file in a shared volume. A second
+  long-running container in the same Pod tails that file and forwards each line
+  to an external log collector. What is this multi-container pattern called?
+options:
+  A: An init container that seeds the volume before the main container starts
+  B: A sidecar container that runs alongside the main container and shares its volume and lifecycle
+  C: An ambassador proxy that forwards traffic on behalf of the main container
+  D: An adapter container that reformats the main container's output for a monitoring system
+answer: B
+explanation: |
+  A sidecar is a secondary container in the same Pod that extends or augments
+  the main container — here the log-shipper sharing a volume with the app.
+  Sidecars share the Pod's network namespace, volumes, and fate. Init
+  containers (A) run to completion before the main container starts and are
+  not long-running; an ambassador (C) proxies network traffic; an adapter (D)
+  normalizes output for a sink but is not primarily a log forwarder.

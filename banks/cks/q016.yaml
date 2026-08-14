@@ -1,0 +1,49 @@
+kind: hands-on
+domain: runtime-security
+level: core
+title: Prevent kubectl exec into pods
+prompt: |
+  You must stop operators from running `kubectl exec` into pods. Create a
+  ValidatingAdmissionPolicy named `deny-pod-exec` that rejects any request
+  targeting the `pods/exec` subresource, and bind it with a
+  ValidatingAdmissionPolicyBinding named `deny-pod-exec-binding` using a Deny
+  action.
+solution: |
+  cat <<'EOF' | kubectl apply -f -
+  apiVersion: admissionregistration.k8s.io/v1
+  kind: ValidatingAdmissionPolicy
+  metadata:
+    name: deny-pod-exec
+  spec:
+    failurePolicy: Fail
+    matchConstraints:
+      resourceRules:
+        - apiGroups: [""]
+          apiVersions: ["v1"]
+          operations: ["CREATE"]
+          resources: ["pods/exec"]
+    validations:
+      - expression: request.subResource != "exec"
+        message: exec into pods is prohibited
+  ---
+  apiVersion: admissionregistration.k8s.io/v1
+  kind: ValidatingAdmissionPolicyBinding
+  metadata:
+    name: deny-pod-exec-binding
+  spec:
+    policyName: deny-pod-exec
+    validationActions: [Deny]
+  EOF
+checks:
+  - desc: ValidatingAdmissionPolicy deny-pod-exec exists
+    run: kubectl get validatingadmissionpolicy deny-pod-exec -o name
+    equals: validatingadmissionpolicy.admissionregistration.k8s.io/deny-pod-exec
+  - desc: Validation expression inspects the exec subresource
+    run: kubectl get validatingadmissionpolicy deny-pod-exec -o jsonpath='{.spec.validations[0].expression}'
+    contains: subResource
+  - desc: ValidatingAdmissionPolicyBinding deny-pod-exec-binding exists
+    run: kubectl get validatingadmissionpolicybinding deny-pod-exec-binding -o name
+    equals: validatingadmissionpolicybinding.admissionregistration.k8s.io/deny-pod-exec-binding
+  - desc: Binding references the deny-pod-exec policy
+    run: kubectl get validatingadmissionpolicybinding deny-pod-exec-binding -o jsonpath='{.spec.policyName}'
+    equals: deny-pod-exec

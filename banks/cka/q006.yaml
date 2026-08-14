@@ -1,0 +1,22 @@
+kind: hands-on
+domain: workloads-scheduling
+level: core
+title: Drain and cordon a node for maintenance
+prompt: |
+  Node `worker1` must be taken out of service for maintenance. Mark it
+  unschedulable, then evict all of its pods so maintenance can proceed. Ignore
+  DaemonSet pods while draining and force the eviction of pods that mount
+  emptyDir volumes. Leave the node in the unschedulable (cordoned) state.
+solution: |
+  kubectl cordon worker1
+  kubectl drain worker1 --ignore-daemonsets --delete-emptydir-data
+checks:
+  - desc: Node worker1 is marked unschedulable
+    run: kubectl get node worker1 -o jsonpath='{.spec.unschedulable}'
+    equals: "true"
+  - desc: Node worker1 still exists
+    run: kubectl get node worker1 -o name
+    equals: node/worker1
+  - desc: Node worker1 reports Ready
+    run: kubectl get node worker1 -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}'
+    equals: "True"

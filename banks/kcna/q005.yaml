@@ -1,0 +1,43 @@
+kind: knowledge
+domain: cloud-native-architecture
+level: deep
+title: Monolith to microservices trade-offs
+prompt: |
+  The company's order-processing monolith is hard to scale because its
+  heaviest component scales only with the whole application. The architect
+  proposes splitting it into microservices. What benefits does this unlock,
+  and what operational costs must the team accept in return?
+options:
+  A: "No real benefit; splitting always makes deployments slower."
+  B: "Independent scaling and deployment of components, in exchange for distributed-systems complexity such as partial failure, latency, and the need for strong observability."
+  C: "Guaranteed data consistency across services, with zero coordination."
+  D: "Fewer moving parts, because each microservice needs no API."
+answer: B
+explanation: |
+  Microservices allow each service to scale, deploy, and fail independently,
+  but they trade a single in-process codebase for distributed-systems
+  problems: network latency, partial failures, distributed data consistency,
+  and the need for service discovery and observability. There is no free
+  consistency (C), and each service needs well-defined APIs (D), so the team
+  must invest in tracing, metrics, and orchestration.
+solution: |
+  Microservices let each component scale, deploy, and be owned independently,
+  so a hot path can be scaled without scaling the whole system and teams ship
+  at their own cadence. In exchange the team accepts distributed-systems
+  costs: network latency between services, partial failures that must be
+  handled with timeouts and retries, distributed data consistency that can no
+  longer rely on a single database transaction, and a hard requirement for
+  observability with metrics, logs, and distributed traces. The monolith's
+  simplicity should not be abandoned without a plan for these operational
+  investments.
+checks:
+  - desc: Mentions independent scaling and deployment
+    contains: "independently"
+  - desc: Mentions latency
+    contains: "latency"
+  - desc: Mentions partial failures
+    contains: "partial failures"
+  - desc: Mentions observability requirement
+    contains: "observability"
+  - desc: Mentions distributed data consistency
+    contains: "consistency"

@@ -1,0 +1,20 @@
+kind: knowledge
+domain: runtime-security
+level: core
+title: Which API server feature records a chronological trail of API actions
+prompt: |
+  After an incident, investigators must reconstruct who called the API server,
+  what they requested, and whether the request was allowed. Which
+  kube-apiserver feature produces this record?
+options:
+  A: Audit logging
+  B: Event-driven autoscaling
+  C: Certificate signing
+  D: Horizontal pod autoscaling
+answer: A
+explanation: |
+  The API server's audit logging emits structured audit events covering the
+  requesting user, verb, resource, source IP, and whether the request was
+  allowed or denied, written to a backend selected by the audit policy.
+  Autoscaling and certificate signing manage capacity and identity and have
+  nothing to do with recording the request history.

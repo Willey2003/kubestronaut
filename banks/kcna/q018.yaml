@@ -1,0 +1,39 @@
+kind: knowledge
+domain: application-delivery
+level: quick
+title: CI/CD delivery pipeline
+prompt: |
+  Developers push code; the team wants a failed test to prevent the new image
+  from ever reaching production, and a successful build to deploy
+  automatically. Which pipeline flow implements this chain?
+options:
+  A: "CI builds and tests the image and pushes it to a registry; CD then updates the cluster to run that image, triggered by the push."
+  B: "Developers manually copy images to nodes after tests pass."
+  C: "Tests run only in production after the release."
+  D: "The cluster compiles source code at deployment time."
+answer: A
+explanation: |
+  Continuous integration builds, tests, and scans the application, then pushes
+  the image to a registry. Continuous delivery/deployment then applies the
+  manifest referencing the new image to the cluster, either triggered by the
+  pipeline or by a GitOps controller watching the repository. Compiling or
+  testing at deploy time in production (C, D) breaks this guarantee.
+solution: |
+  The pipeline implements CI/CD in two linked stages. Continuous integration
+  builds the application image from source, runs unit and integration tests,
+  optionally scans for vulnerabilities, and pushes the tested image to a
+  registry with a unique tag or digest. Continuous delivery then updates the
+  running workload to the new image, either the pipeline runs kubectl or helm
+  against the cluster or a GitOps controller watches the repository and applies
+  the change automatically. Because only images that passed CI are ever
+  referenced by CD, a failing test stops the chain before anything reaches
+  production.
+checks:
+  - desc: CI builds and tests the image
+    contains: "integration"
+  - desc: Pushes the image to a registry
+    contains: "registry"
+  - desc: CD updates the workload to the new image
+    contains: "kubectl"
+  - desc: Gates delivery on passing tests
+    contains: "test"

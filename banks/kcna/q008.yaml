@@ -1,0 +1,37 @@
+kind: knowledge
+domain: containers-orchestration
+level: core
+title: What an orchestrator provides
+prompt: |
+  A developer unfamiliar with Kubernetes asks what the platform actually does
+  beyond running containers. Which capabilities does Kubernetes provide as a
+  container orchestrator?
+options:
+  A: "Scheduling containers onto nodes, self-healing failed workloads, scaling on demand, and managing rolling updates."
+  B: "Only starting and stopping a single container on a single host."
+  C: "Compiling application source code into binaries."
+  D: "Writing application business logic."
+answer: A
+explanation: |
+  Kubernetes is a container orchestrator: it schedules pods onto the best-fit
+  nodes, restarts or reschedules failed containers, scales workloads in and out
+  (manually or with the HPA), and rolls out updates with configurable
+  strategies. It does not compile code or implement application logic.
+solution: |
+  Kubernetes provides orchestration, not just container execution. It schedules
+  pods onto nodes based on resource fit and constraints, self-heals by
+  restarting failed containers and rescheduling evicted pods, scales workloads
+  out and in manually or automatically through the horizontal pod autoscaler,
+  and performs rolling updates and rollbacks of Deployments with controlled
+  availability. It also gives every pod DNS-based service discovery. It does
+  not compile source code or contain business logic; those remain the
+  application's responsibility.
+checks:
+  - desc: Mentions scheduling
+    contains: "schedules"
+  - desc: Mentions self-healing
+    contains: "self-heals"
+  - desc: Mentions autoscaling
+    contains: "autoscaler"
+  - desc: Mentions rolling updates
+    contains: "rolling updates"

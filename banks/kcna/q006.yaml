@@ -1,0 +1,40 @@
+kind: knowledge
+domain: containers-orchestration
+level: core
+title: Image layers, tags, and digests
+prompt: |
+  The platform team builds two applications from the same base image and pushes
+  new versions to the registry daily. An engineer wants to speed up builds and
+  pin exact dependencies. Why do OCI images use layers, and why is an image
+  digest more reliable than a tag?
+options:
+  A: "Layers allow reuse of cached content across images, and a digest uniquely and immutably identifies the exact image content."
+  B: "Layers make images larger so they download faster."
+  C: "Digests are just the tag with a colon, and tags never change."
+  D: "Images have no layers; each push overwrites the entire image."
+answer: A
+explanation: |
+  OCI images are built from layers; unchanged layers are cached and reused by
+  the registry and the container runtime, so rebuilding shares the base image
+  instead of re-pushing it. A tag like `nginx:stable-alpine` is a mutable
+  pointer, while a digest (`image@sha256:...`) hashes the exact manifest and
+  content, so it uniquely identifies the immutable image and protects against
+  tags being re-pointed.
+solution: |
+  OCI images are composed of immutable layers. When a build reuses an unchanged
+  base layer, both the registry and the local cache can reuse it instead of
+  transferring it again, which makes builds and pulls fast. A tag is a mutable
+  pointer that can be reassigned, so `nginx:stable-alpine` can change meaning;
+  a digest such as `image@sha256:...` is a content hash that uniquely and
+  immutably identifies the exact image, so pinning by digest guarantees that
+  every node runs precisely the tested content. This also matters for
+  supply-chain security because a digest proves exactly what was pulled.
+checks:
+  - desc: Explains layer reuse and caching
+    contains: "layers"
+  - desc: Explains digest immutability
+    contains: "digest"
+  - desc: Notes tags are mutable
+    contains: "mutable"
+  - desc: Mentions OCI
+    contains: "OCI"

@@ -1,0 +1,17 @@
+kind: hands-on
+domain: cluster-architecture
+level: core
+title: Switch the active kubeconfig context
+prompt: |
+  Your kubeconfig already defines three contexts: `dev`, `stage`, and `prod`.
+  Switch the active context to `stage` so that all subsequent kubectl commands
+  are executed against the `stage` cluster with the `stage` user.
+solution: |
+  kubectl config use-context stage
+checks:
+  - desc: The current context is stage
+    run: kubectl config current-context
+    equals: stage
+  - desc: The stage context is defined in the kubeconfig
+    run: kubectl config view -o jsonpath='{.contexts[?(@.name=="stage")].name}'
+    equals: stage

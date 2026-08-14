@@ -1,0 +1,14 @@
+id: kcna
+title: KCNA Cloud Native Associate Mock
+engine: knowledge
+duration_minutes: 90
+pass_threshold: 0.67
+draw_size: 24
+seed: null
+domains:
+  cloud-native-architecture: 0.20
+  containers-orchestration: 0.20
+  kubernetes-resources: 0.20
+  application-delivery: 0.15
+  observability: 0.15
+  cloud-native-networking: 0.10

@@ -1,0 +1,22 @@
+kind: knowledge
+domain: supply-chain
+level: quick
+title: Which command verifies an image signature with cosign
+prompt: |
+  Images are signed by the CI pipeline with a private key. Before deploying,
+  the platform team wants to check, using only the public key, that the image
+  was signed by that key and has not been tampered with. Which command performs
+  this verification?
+options:
+  A: "`cosign verify --key cosign.pub registry.example.com/app:v1`"
+  B: "`cosign sign --key cosign.pub registry.example.com/app:v1`"
+  C: "`cosign generate-key-pair registry.example.com/app:v1`"
+  D: "`cosign attest-blob registry.example.com/app:v1`"
+answer: A
+explanation: |
+  `cosign verify` fetches the image and checks its signature against the
+  supplied public key, failing if the signature is missing, invalid, or the
+  image was modified. `cosign sign` creates a signature, `generate-key-pair`
+  creates keys, and `attest-blob` produces an attestation. Sigstore's keyless
+  flow uses Fulcio certificates and Rekor transparency logs as an alternative
+  to key-based signing.

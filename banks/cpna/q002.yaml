@@ -1,0 +1,20 @@
+kind: knowledge
+domain: observability-fundamentals
+level: core
+title: RED method signals
+prompt: |
+  For a request-serving API you adopt the RED method for service
+  monitoring. Which three signals does RED focus on?
+options:
+  A: Rate, Errors, Duration
+  B: Utilization, Saturation, Errors
+  C: Requests, Events, Debugging
+  D: Availability, Latency, Throughput
+answer: A
+explanation: |
+  RED stands for Rate (requests per second), Errors (the count or fraction
+  of failing requests), and Duration (the latency distribution). It targets
+  the experience of request-driven services. Option B is the USE method,
+  which applies Utilization, Saturation, and Errors to infrastructure
+  resources such as CPUs, disks, and network interfaces rather than to the
+  requests themselves.

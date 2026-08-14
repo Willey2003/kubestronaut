@@ -1,0 +1,15 @@
+# runtime state
+state/
+*.log
+cluster/.cache/
+cluster/okd-install/
+
+# python
+__pycache__/
+*.pyc
+.venv/
+
+# editor / OS
+.vscode/
+.idea/
+.DS_Store

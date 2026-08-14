@@ -1,0 +1,20 @@
+kind: knowledge
+domain: cluster-security
+level: core
+title: Where should a workload's database password be stored
+prompt: |
+  A new workload needs a database password. Following Kubernetes security best
+  practices, where should the secret be stored and how should the pod consume
+  it?
+options:
+  A: In a Secret, mounted as a file, with RBAC restricting who can read it
+  B: As a plaintext environment variable in the Deployment manifest
+  C: Burned into the container image so it is always available
+  D: In a ConfigMap alongside other non-sensitive settings
+answer: A
+explanation: |
+  Secrets belong in a Secret object consumed from a mounted file or
+  environment variable, with RBAC limiting who can read the Secret and
+  encryption at rest enabled on etcd. Plaintext manifests and image layers
+  leak credentials into version control and image registries, and ConfigMaps
+  are intended for non-sensitive configuration.

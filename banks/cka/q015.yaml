@@ -1,0 +1,24 @@
+kind: hands-on
+domain: troubleshooting
+level: deep
+title: Fix a Deployment stuck in ImagePullBackOff
+prompt: |
+  Deployment `web` in namespace `practice` is broken: its pods are stuck in
+  ImagePullBackOff. Inspect the cluster with `kubectl get events` and
+  `kubectl describe` to find the cause, then correct the container image to
+  `nginx:1.25` so the deployment's 3 replicas become ready.
+solution: |
+  kubectl -n practice get events --sort-by=.lastTimestamp
+  kubectl -n practice describe deployment web
+  kubectl -n practice describe pod -l app=web
+  kubectl -n practice set image deployment/web web=nginx:1.25
+checks:
+  - desc: Deployment web uses image nginx:1.25
+    run: kubectl -n practice get deployment web -o jsonpath='{.spec.template.spec.containers[0].image}'
+    equals: nginx:1.25
+  - desc: All replicas are ready
+    run: kubectl -n practice get deployment web -o jsonpath='{.status.readyReplicas}'
+    equals: 3
+  - desc: Rollout completed successfully
+    run: kubectl -n practice rollout status deployment/web --timeout=60s
+    exit-success: true

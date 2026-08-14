@@ -1,0 +1,21 @@
+kind: knowledge
+domain: threat-modeling
+level: quick
+title: Which STRIDE category covers an attacker modifying audit records
+prompt: |
+  During a threat-modeling session you enumerate ways an attacker could alter
+  logs or data in transit so that detection is blinded. In the STRIDE model,
+  which threat category does this belong to?
+options:
+  A: Tampering
+  B: Spoofing
+  C: Repudiation
+  D: Denial of Service
+answer: A
+explanation: |
+  STRIDE classifies threats as Spoofing, Tampering, Repudiation, Information
+  disclosure, Denial of service, and Elevation of privilege. Altering logs or
+  data in transit is Tampering, whereas Spoofing impersonates an identity,
+  Repudiation denies having performed an action, and Denial of Service
+  disrupts availability. Its companion model DREAD is used to score the risk
+  of each identified threat.

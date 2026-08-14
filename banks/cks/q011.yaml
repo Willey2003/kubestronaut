@@ -1,0 +1,42 @@
+kind: hands-on
+domain: microservice-vulns
+level: core
+title: Allow ingress to the API tier from the frontend only
+prompt: |
+  Namespace `lab-netpol` already enforces a default-deny policy. Create a
+  NetworkPolicy named `allow-frontend` in `lab-netpol` that allows ingress to
+  Pods labeled `app: api` only from Pods labeled `app: frontend` and only on
+  TCP port 8080.
+solution: |
+  cat <<'EOF' | kubectl apply -f -
+  apiVersion: networking.k8s.io/v1
+  kind: NetworkPolicy
+  metadata:
+    name: allow-frontend
+    namespace: lab-netpol
+  spec:
+    podSelector:
+      matchLabels:
+        app: api
+    ingress:
+      - from:
+          - podSelector:
+              matchLabels:
+                app: frontend
+        ports:
+          - protocol: TCP
+            port: 8080
+  EOF
+checks:
+  - desc: NetworkPolicy allow-frontend exists in lab-netpol
+    run: kubectl -n lab-netpol get networkpolicy allow-frontend -o name
+    equals: networkpolicy.networking.k8s.io/allow-frontend
+  - desc: Policy targets pods labeled app=api
+    run: kubectl -n lab-netpol get networkpolicy allow-frontend -o jsonpath='{.spec.podSelector.matchLabels.app}'
+    equals: api
+  - desc: Ingress is limited to pods labeled app=frontend
+    run: kubectl -n lab-netpol get networkpolicy allow-frontend -o jsonpath='{.spec.ingress[0].from[0].podSelector.matchLabels.app}'
+    equals: frontend
+  - desc: Only TCP port 8080 is allowed
+    run: kubectl -n lab-netpol get networkpolicy allow-frontend -o jsonpath='{.spec.ingress[0].ports[0].port}'
+    equals: 8080

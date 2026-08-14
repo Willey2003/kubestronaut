@@ -1,0 +1,39 @@
+kind: knowledge
+domain: observability
+level: deep
+title: Liveness, readiness, and startup probes
+prompt: |
+  A service takes over a minute to warm up and, once ready, may occasionally
+  deadlock. Without probes it never receives traffic until a restart, and with
+  only liveness it restarts while still starting up. Which probe configuration
+  best fits this service, and what does each probe control?
+options:
+  A: "A startup probe to defer liveness during warm-up, a liveness probe to restart deadlocked instances, and a readiness probe to gate traffic until the service can serve it."
+  B: "Only a liveness probe, and restart the pod immediately on any slowness."
+  C: "No probes; rely on the Service to detect health."
+  D: "A readiness probe alone, which also restarts the container."
+answer: A
+explanation: |
+  Readiness probes control whether a pod's IP is included in Service endpoints:
+  the pod keeps running but receives no traffic until ready. Liveness probes
+  trigger a restart when the container is unhealthy. Startup probes run before
+  liveness/readiness begin, so a slow-starting process is not killed during
+  warm-up. The Service does not detect application health by itself.
+solution: |
+  The three probes have distinct jobs. A startup probe runs first and keeps
+  liveness and readiness disabled until the container has finished warming up,
+  so a slow-starting service is not killed prematurely. The liveness probe then
+  periodically checks health and restarts the container if it is deadlocked or
+  unresponsive. The readiness probe controls whether the pod is added to
+  Service endpoints: while readiness fails, the pod keeps running but receives
+  no traffic. Together they allow the deployment to survive slow starts,
+  self-heal deadlocks, and only serve traffic when truly ready.
+checks:
+  - desc: Explains the startup probe defers liveness
+    contains: "startup"
+  - desc: Explains liveness restarts deadlocked containers
+    contains: "liveness"
+  - desc: Explains readiness gates Service endpoints
+    contains: "readiness"
+  - desc: Notes endpoints and traffic control
+    contains: "endpoints"

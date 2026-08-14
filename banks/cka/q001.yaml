@@ -1,0 +1,24 @@
+kind: knowledge
+domain: cluster-architecture
+level: core
+title: kubeadm join and upgrade workflow
+prompt: |
+  A cluster was bootstrapped with kubeadm. The administrator must add two
+  worker nodes to the cluster and, later, perform a minor-version upgrade of
+  the control plane and then the workers. Which statement about these kubeadm
+  workflows is correct?
+options:
+  A: "A worker node joins by running `kubeadm join <API-SERVER>:6443 --token <TOKEN> --discovery-token-ca-cert-hash <HASH>` on the node."
+  B: "Worker nodes must be upgraded first with `kubeadm upgrade apply` and the control plane afterwards."
+  C: "`kubeadm upgrade plan` immediately applies the new version to the control plane."
+  D: Joining nodes first need a CertificateSigningRequest manually approved by kube-controller-manager.
+answer: A
+explanation: |
+  `kubeadm join` authenticates the new node with a bootstrap token and the
+  cluster's CA hash, after which the kubelet receives its node certificate
+  through an automatically approved CSR. Upgrades always start on the
+  control-plane node with `kubeadm upgrade apply` and only afterwards move to
+  the workers, so B is backwards. `kubeadm upgrade plan` is a dry run that
+  lists available versions without applying them, so C is wrong, and node
+  certificates are issued automatically rather than approved manually, so D
+  is wrong.

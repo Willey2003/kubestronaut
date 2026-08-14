@@ -1,0 +1,24 @@
+kind: hands-on
+domain: supply-chain
+level: core
+title: Harden image pull policy and record SBOM verification
+prompt: |
+  Deployment `payments` in namespace `fin` pulls `nginx:1.27-alpine`, a mutable
+  tag. Enforce supply-chain hygiene: set the container's imagePullPolicy to
+  `IfNotPresent` and annotate the pod template with `sbom-verified=true` to
+  record that the image's SBOM was verified.
+solution: |
+  kubectl -n fin patch deployment payments -p '{"spec":{"template":{"metadata":{"annotations":{"sbom-verified":"true"}},"spec":{"containers":[{"name":"payments","imagePullPolicy":"IfNotPresent"}]}}}}'
+setup:
+  - kubectl create ns fin
+  - kubectl create deployment payments -n fin --image=nginx:1.27-alpine
+checks:
+  - desc: Image pull policy is IfNotPresent
+    run: "kubectl -n fin get deploy payments -o jsonpath='{.spec.template.spec.containers[0].imagePullPolicy}'"
+    equals: IfNotPresent
+  - desc: SBOM verification is recorded on the pod template
+    run: "kubectl -n fin get deploy payments -o jsonpath='{.spec.template.metadata.annotations.sbom-verified}'"
+    equals: "true"
+  - desc: Container name is unchanged
+    run: "kubectl -n fin get deploy payments -o jsonpath='{.spec.template.spec.containers[0].name}'"
+    equals: payments

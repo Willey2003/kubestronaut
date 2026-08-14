@@ -1,0 +1,22 @@
+kind: knowledge
+domain: storage
+level: deep
+title: Expanding a PersistentVolumeClaim at runtime
+prompt: |
+  An administrator wants to increase the requested size of a
+  PersistentVolumeClaim while it is in use, without re-creating it. Which
+  condition must be satisfied for this online expansion to work?
+options:
+  A: "The StorageClass referenced by the PVC has allowVolumeExpansion: true and the volume plugin supports resizing."
+  B: The PVC's accessModes must be changed to ReadWriteMany first.
+  C: The PVC must be backed by a hostPath PersistentVolume.
+  D: The claim must be deleted and re-created with the larger request.
+answer: A
+explanation: |
+  Online expansion is driven by the volume plugin: the StorageClass must set
+  allowVolumeExpansion: true and the underlying plugin (for example a CSI
+  driver) must implement the resize operation; afterwards you only patch the
+  PVC to request more storage. ReadWriteMany is not a precondition (B).
+  hostPath volumes cannot be expanded (C), and re-creating the claim (D) is
+  unnecessary for online expansion — that is exactly what allowVolumeExpansion
+  is for.

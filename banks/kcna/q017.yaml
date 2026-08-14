@@ -1,0 +1,42 @@
+kind: knowledge
+domain: application-delivery
+level: deep
+title: Canary vs blue-green releases
+prompt: |
+  A core checkout service must be updated with the smallest possible blast
+  radius. The team considers shipping the new version to everyone at once, or
+  staging traffic gradually, or keeping the old version fully running until the
+  switch. Which release strategies fit these goals, and what do they trade off?
+options:
+  A: "Canary gradually shifts traffic to the new version; blue-green keeps two complete environments and switches all traffic at once with an instant rollback path."
+  B: "Delete the old Deployment before creating the new one, with no overlap."
+  C: "Change the Service's selector to a random name each release."
+  D: "Run both versions but route traffic with no rules."
+answer: A
+explanation: |
+  A canary rollout routes a small percentage of traffic to the new version,
+  observes it, then increases the share, ideal for validating behavior with
+  real traffic. Blue-green runs the new version alongside the old and flips a
+  load balancer or Service selector to cut over instantly, so rollback is
+  flipping back. Both trade the cost of running extra capacity or traffic
+  routing for a dramatically lower blast radius.
+solution: |
+  A canary strategy routes a small percentage of live traffic to the new
+  version while the old version keeps serving the rest, letting the team
+  observe errors and latency before gradually increasing the canary share and
+  completing the rollout. A blue-green strategy runs both versions in full,
+  then switches a Service selector or ingress rule to move all traffic to the
+  new environment at once; if anything is wrong, an instant rollback flips
+  back and restores service immediately. Both strategies trade the operational
+  cost of running extra
+  capacity or managed traffic routing for a much smaller blast radius and
+  faster recovery than a full cutover.
+checks:
+  - desc: Describes canary traffic shifting
+    contains: "canary"
+  - desc: Describes blue-green cutover
+    contains: "blue-green"
+  - desc: Mentions instant rollback
+    contains: "rollback"
+  - desc: Mentions traffic routing
+    contains: "traffic"

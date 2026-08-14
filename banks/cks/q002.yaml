@@ -1,0 +1,39 @@
+kind: hands-on
+domain: cluster-setup
+level: core
+title: Create an audit policy that logs Secret access
+prompt: |
+  Namespace `kube-system` exists. Create a ConfigMap named `audit-policy` in
+  namespace `kube-system` whose data key `policy` contains an AuditPolicy
+  (apiVersion `audit.k8s.io/v1`) that records requests touching `secrets` at
+  level `Metadata`.
+solution: |
+  cat <<'EOF' | kubectl apply -f -
+  apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: audit-policy
+    namespace: kube-system
+  data:
+    policy: |
+      apiVersion: audit.k8s.io/v1
+      kind: Policy
+      rules:
+        - level: Metadata
+          resources:
+            - group: ""
+              resources: ["secrets"]
+  EOF
+checks:
+  - desc: ConfigMap audit-policy exists in kube-system
+    run: kubectl get configmap audit-policy -n kube-system -o name
+    equals: configmap/audit-policy
+  - desc: Policy data is a valid audit.k8s.io Policy document
+    run: kubectl get configmap audit-policy -n kube-system -o jsonpath='{.data.policy}'
+    contains: audit.k8s.io/v1
+  - desc: Policy targets the secrets resource
+    run: kubectl get configmap audit-policy -n kube-system -o jsonpath='{.data.policy}'
+    contains: secrets
+  - desc: Policy logs at Metadata level
+    run: kubectl get configmap audit-policy -n kube-system -o jsonpath='{.data.policy}'
+    contains: Metadata

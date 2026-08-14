@@ -1,0 +1,22 @@
+kind: knowledge
+domain: cluster-setup
+level: quick
+title: Which flags enable mutual TLS for etcd
+prompt: |
+  etcd on the control plane must reject requests that do not come from the
+  kube-apiserver and must encrypt all traffic between clients and the server.
+  Which pair of etcd flags provides client certificate authentication and
+  transport encryption?
+options:
+  A: "`--client-cert-auth=true` together with `--cert-file` and `--key-file`"
+  B: "`--enable-admission-plugins=NodeRestriction` and `--authorization-mode=RBAC`"
+  C: "`--anonymous-auth=true` and `--insecure-skip-tls-verify`"
+  D: "`--allow-privileged=true` and `--feature-gates=AllAlpha=true`"
+answer: A
+explanation: |
+  `--client-cert-auth=true` makes etcd require and verify a client certificate
+  on every request, while `--cert-file` and `--key-file` make the etcd server
+  present its own certificate so the traffic is encrypted in both directions.
+  The kube-apiserver is started with `--etcd-certfile`/`--etcd-keyfile` to
+  present its client identity. The other options configure the API server's
+  admission or authorization behavior and do not secure the etcd channel.

@@ -1,0 +1,17 @@
+id: kcsa
+title: KCSA Security Associate Mock
+engine: mixed
+duration_minutes: 90
+pass_threshold: 0.75
+draw_size: 16
+seed: null
+domains:
+  threat-modeling: 0.20
+  supply-chain: 0.20
+  cluster-security: 0.20
+  workload-security: 0.20
+  runtime-security: 0.20
+levels:
+  quick: 0.3
+  core: 0.5
+  deep: 0.2

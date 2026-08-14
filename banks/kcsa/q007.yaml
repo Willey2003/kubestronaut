@@ -1,0 +1,20 @@
+kind: knowledge
+domain: cluster-security
+level: deep
+title: Which admission mechanism rejects privileged pods before they are stored
+prompt: |
+  A cluster administrator must ensure that no pod with `privileged: true` is
+  ever created. After authentication and authorization succeed, which mechanism
+  can enforce this policy when the pod is created?
+options:
+  A: An admission controller such as PodSecurity or a validating webhook
+  B: A NetworkPolicy in the pod's namespace
+  C: A RoleBinding granting read access only to secrets
+  D: Encrypting secrets at rest in etcd
+answer: A
+explanation: |
+  Admission controllers and validating webhooks run after authorization and
+  before the object is persisted, so they can reject a pod spec that requests
+  privileged containers. NetworkPolicies only shape traffic, RoleBindings only
+  grant API permissions, and etcd encryption protects data at rest; none of
+  them evaluate the pod spec during creation.

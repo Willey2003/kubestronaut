@@ -1,0 +1,23 @@
+kind: knowledge
+domain: grafana
+level: deep
+title: Dashboard variables and alerting
+prompt: |
+  You manage one dashboard that must be reused for staging and production.
+  Which Grafana feature lets a user pick an environment that is then
+  substituted into every panel query?
+options:
+  A: Dashboard variables (templating), such as $env, defined once and
+    interpolated into each panel's PromQL.
+  B: A separate data source for every environment.
+  C: Alert rules that switch the query target at runtime.
+  D: The plugin catalog.
+answer: A
+explanation: |
+  Variables let one dashboard drive many instances: define $env with values
+  taken from a label (label_values) or a static list, then reference it in
+  queries such as up{job="$env"}; Grafana substitutes the selected value and
+  renders a dropdown selector. Grafana alerting is a separate concern: an
+  alert rule evaluates a query against a condition (for example, up < 1 for
+  five minutes) and fires notifications through contact points when it is
+  breached.

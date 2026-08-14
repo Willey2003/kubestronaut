@@ -1,0 +1,21 @@
+kind: knowledge
+domain: workloads-scheduling
+level: quick
+title: Static pods are not managed by a controller
+prompt: |
+  An administrator must run a single container on a specific node without any
+  Deployment, ReplicaSet, Job, DaemonSet or other controller managing it, and
+  without the scheduler placing it. Which mechanism should be used?
+options:
+  A: Drop a Pod manifest into the kubelet's static-pod directory (e.g. /etc/kubernetes/manifests).
+  B: Create a Deployment with a nodeSelector that matches the node.
+  C: Create a Job with parallelism 1 and backoffLimit 0.
+  D: Create a DaemonSet with a nodeSelector that matches the node.
+answer: A
+explanation: |
+  Kubelets watch their static-pod directory (commonly /etc/kubernetes/manifests)
+  and create those pods directly, bypassing the API server scheduler; the API
+  server only shows a mirror pod. Deployments (B), Jobs (C) and DaemonSets (D)
+  are all placed by the scheduler and keep the pod under a controller, so none
+  of them satisfies the requirement of a controller-free pod created directly
+  by the kubelet.

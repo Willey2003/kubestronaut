@@ -1,0 +1,38 @@
+kind: knowledge
+domain: application-delivery
+level: core
+title: GitOps for declarative delivery
+prompt: |
+  The team wants git to be the single source of truth: any merge to the main
+  branch should eventually make the cluster match the repo, with no human
+  `kubectl` commands. Which approach implements this, and which tools typically
+  do it?
+options:
+  A: "GitOps: a controller watches the repository and reconciles cluster state toward it, commonly implemented with Argo CD or Flux."
+  B: "A nightly cron job that runs kubectl delete --all."
+  C: "Engineers SSH into nodes and run kubectl by hand after each merge."
+  D: "Storing manifests on a shared drive that kubectl reads automatically."
+answer: A
+explanation: |
+  GitOps makes the git repository the declarative source of truth. A controller
+  such as Argo CD or Flux continuously compares desired state in git with live
+  cluster state and reconciles any drift, so merges are delivered automatically
+  and audit history equals deployment history. It requires no interactive
+  `kubectl`, and rollbacks are just reverting a commit.
+solution: |
+  GitOps treats the git repository as the source of truth for desired state. An
+  operator controller, most commonly Argo CD or Flux, continuously compares the
+  manifests in the repository with the live cluster and reconciles any
+  differences, so merging a change to the main branch automatically drives the
+  cluster to that state. No one needs to run kubectl to deploy, every change is
+  reviewable and auditable through pull requests, and rollback is reverting the
+  offending commit and letting the controller converge again.
+checks:
+  - desc: Defines git as the source of truth
+    contains: "source of truth"
+  - desc: Mentions a reconciling controller
+    contains: "reconcile"
+  - desc: Names Argo CD or Flux
+    contains: "Argo CD"
+  - desc: Explains rollback by reverting a commit
+    contains: "rollback"

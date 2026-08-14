@@ -1,0 +1,65 @@
+kind: hands-on
+domain: application-deployment
+level: core
+title: Roll a Deployment to a new image with a change-cause
+prompt: |
+  Namespace `ckad-q08` does not exist yet — create it as part of this task.
+  Create a Deployment named `web` in namespace `ckad-q08` running 3 replicas
+  of image `nginx:1.25` (container name `nginx`, container port 80) with
+  resource requests `cpu: 250m`, `memory: 64Mi` and limits `cpu: 500m`,
+  `memory: 128Mi`. Then update the Deployment to image `nginx:1.27` and record
+  a `kubernetes.io/change-cause` annotation of `bump to 1.27`. The rollout must
+  complete.
+solution: |
+  kubectl create namespace ckad-q08
+  cat <<'EOF' | kubectl apply -f -
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: web
+    namespace: ckad-q08
+  spec:
+    replicas: 3
+    selector:
+      matchLabels:
+        app: web
+    template:
+      metadata:
+        labels:
+          app: web
+      spec:
+        containers:
+          - name: nginx
+            image: nginx:1.25
+            ports:
+              - containerPort: 80
+            resources:
+              requests:
+                cpu: 250m
+                memory: 64Mi
+              limits:
+                cpu: 500m
+                memory: 128Mi
+  EOF
+  kubectl -n ckad-q08 set image deployment/web nginx=nginx:1.27
+  kubectl -n ckad-q08 annotate deployment/web kubernetes.io/change-cause="bump to 1.27"
+  kubectl -n ckad-q08 rollout status deployment/web --timeout=90s
+checks:
+  - desc: Deployment web exists in ckad-q08
+    run: kubectl -n ckad-q08 get deployment web -o name
+    equals: deployment.apps/web
+  - desc: Deployment runs image nginx:1.27
+    run: kubectl -n ckad-q08 get deployment web -o jsonpath='{.spec.template.spec.containers[0].image}'
+    equals: nginx:1.27
+  - desc: Container requests 250m CPU
+    run: kubectl -n ckad-q08 get deployment web -o jsonpath='{.spec.template.spec.containers[0].resources.requests.cpu}'
+    equals: 250m
+  - desc: Container limits memory to 128Mi
+    run: kubectl -n ckad-q08 get deployment web -o jsonpath='{.spec.template.spec.containers[0].resources.limits.memory}'
+    equals: 128Mi
+  - desc: change-cause annotation records the bump
+    run: kubectl -n ckad-q08 get deployment web -o jsonpath='{.metadata.annotations.kubernetes\.io/change-cause}'
+    equals: bump to 1.27
+  - desc: Rollout completed successfully
+    run: kubectl -n ckad-q08 rollout status deployment/web --timeout=90s
+    exit-success: true

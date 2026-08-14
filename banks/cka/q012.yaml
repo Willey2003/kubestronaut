@@ -1,0 +1,44 @@
+kind: hands-on
+domain: services-networking
+level: deep
+title: Allow web pods to reach the database pods
+prompt: |
+  In namespace `practice` there are pods labelled `app=web` and `app=db`.
+  Create a NetworkPolicy named `db-policy` that allows ingress to pods
+  labelled `app=db` only from pods labelled `app=web` and only on TCP port
+  5432. All other ingress to the db pods is denied.
+solution: |
+  cat <<'EOF' | kubectl apply -f -
+  apiVersion: networking.k8s.io/v1
+  kind: NetworkPolicy
+  metadata:
+    name: db-policy
+    namespace: practice
+  spec:
+    podSelector:
+      matchLabels:
+        app: db
+    policyTypes:
+      - Ingress
+    ingress:
+      - from:
+          - podSelector:
+              matchLabels:
+                app: web
+        ports:
+          - protocol: TCP
+            port: 5432
+  EOF
+checks:
+  - desc: NetworkPolicy db-policy exists in practice
+    run: kubectl -n practice get networkpolicy db-policy -o name
+    equals: networkpolicy.networking.k8s.io/db-policy
+  - desc: Policy targets pods labelled app=db
+    run: kubectl -n practice get networkpolicy db-policy -o jsonpath='{.spec.podSelector.matchLabels.app}'
+    equals: db
+  - desc: Ingress is limited to pods labelled app=web
+    run: kubectl -n practice get networkpolicy db-policy -o jsonpath='{.spec.ingress[0].from[0].podSelector.matchLabels.app}'
+    equals: web
+  - desc: Only TCP port 5432 is allowed
+    run: kubectl -n practice get networkpolicy db-policy -o jsonpath='{.spec.ingress[0].ports[0].port}'
+    equals: 5432

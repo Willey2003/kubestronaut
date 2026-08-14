@@ -1,0 +1,40 @@
+kind: knowledge
+domain: containers-orchestration
+level: core
+title: Container runtimes and the CRI
+prompt: |
+  A cluster runs containers via containerd, and an engineer refers to runc as
+  "the runtime." During onboarding, someone asks what containerd, runc, and the
+  CRI actually do, and whether the kubelet talks to them directly. Which
+  statement is correct?
+options:
+  A: "The kubelet calls containerd through the CRI, and containerd in turn uses a low-level runtime such as runc to create containers."
+  B: "The kubelet creates containers directly without any intermediary."
+  C: "The CRI is a Docker-only interface that Kubernetes no longer supports."
+  D: "runc is a full container engine with its own image management."
+answer: A
+explanation: |
+  The kubelet talks to a container runtime through the CRI (Container Runtime
+  Interface), a gRPC API. containerd implements the CRI and uses runc (an OCI
+  runtime) to actually spawn container processes. Docker is one CRI
+  implementation but no longer the only one; the CRI is runtime-agnostic, and
+  runc is a low-level runtime, not an engine that manages images.
+solution: |
+  The kubelet does not create containers itself. It communicates with a
+  container runtime through the CRI (Container Runtime Interface), a gRPC
+  protocol, and on modern clusters that runtime is containerd. containerd
+  manages images and container lifecycle, and it hands the low-level process
+  creation to an OCI runtime such as runc. The CRI is runtime-agnostic: Docker
+  is only one implementation among several, and runc is a low-level runtime
+  rather than a full container engine.
+checks:
+  - desc: Names the CRI
+    contains: "CRI"
+  - desc: Names containerd
+    contains: "containerd"
+  - desc: Names runc
+    contains: "runc"
+  - desc: Says the kubelet uses the CRI rather than direct creation
+    contains: "kubelet"
+  - desc: Mentions OCI
+    contains: "OCI"

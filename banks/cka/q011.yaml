@@ -1,0 +1,23 @@
+kind: knowledge
+domain: services-networking
+level: deep
+title: Routing multiple paths with an Ingress
+prompt: |
+  An Ingress must route requests for the host `app.example.com` so that
+  requests under the path prefix `/api` reach the Service `api-svc` on port
+  8080 and all other requests reach `web-svc` on port 80. Which description of
+  a correct Ingress is right?
+options:
+  A: "One rule for host app.example.com with two path entries: /api (pathType Prefix) to api-svc:8080 and / (pathType Prefix) to web-svc:80."
+  B: One rule with host app.example.com and a single backend of web-svc:80.
+  C: One rule with host /api and backend api-svc:8080, plus one rule with host app.example.com and backend web-svc:80.
+  D: One rule per Service where every path uses pathType Exact.
+answer: A
+explanation: |
+  A single Ingress rule can map a host to several paths, each with its own
+  backend Service and port, and pathType Prefix matches the whole prefix, so
+  option A routes /api and everything else exactly as required. A single
+  backend (B) would never reach api-svc. Ingress hosts are hostnames, not
+  paths, so C is malformed. pathType Exact on every entry would only match
+  exactly those literal paths and cannot catch "all other requests", so D is
+  wrong.

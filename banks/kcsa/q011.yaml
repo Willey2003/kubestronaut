@@ -1,0 +1,22 @@
+kind: knowledge
+domain: runtime-security
+level: quick
+title: Which tool detects suspicious system call activity at runtime
+prompt: |
+  A security team needs visibility into container behaviour that deviates from
+  allowed patterns, such as a web container spawning a shell or opening a raw
+  socket. Which runtime security tool is designed for this kind of behavioural
+  detection?
+options:
+  A: Falco
+  B: kubectl top
+  C: Prometheus
+  D: kube-bench
+answer: A
+explanation: |
+  Falco instruments the kernel (through a kernel module, eBPF, or userspace
+  instrumentation) and raises alerts when syscall and activity patterns
+  deviate from declarative rules, for example a shell spawned inside a web
+  pod. `kubectl top` and Prometheus measure resource usage, and kube-bench
+  audits the cluster against CIS benchmarks; none detect behaviour in real
+  time.

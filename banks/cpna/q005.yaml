@@ -1,0 +1,24 @@
+kind: knowledge
+domain: prometheus-fundamentals
+level: quick
+title: How Prometheus collects metrics
+prompt: |
+  By default, how does a Prometheus server obtain metrics from a monitored
+  target?
+options:
+  A: Prometheus actively pulls (scrapes) an HTTP endpoint, conventionally
+    /metrics, exposed by the target on a configured interval.
+  B: Every target pushes its metrics to Prometheus over a TCP socket at
+    startup.
+  C: Targets write metrics into a shared SQL database that Prometheus
+    reads.
+  D: A separate agent polls targets and forwards batches to Prometheus by
+    HTTP push.
+answer: A
+explanation: |
+  Prometheus uses a pull model: it connects to each discovered target and
+  scrapes the /metrics endpoint over HTTP on a schedule such as every 15
+  seconds. That is why every target must be reachable from the Prometheus
+  server and must expose an endpoint in the Prometheus text format. The one
+  prominent exception is short-lived batch jobs, which push to the
+  Pushgateway because they terminate before they could ever be scraped.

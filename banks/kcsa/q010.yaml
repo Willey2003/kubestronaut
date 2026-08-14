@@ -1,0 +1,24 @@
+kind: hands-on
+domain: workload-security
+level: core
+title: Harden a Deployment with a non-root security context
+prompt: |
+  Deployment `worker` in namespace `secure` must run with a locked-down
+  security context. Patch the Deployment so its container runs as non-root
+  (`runAsNonRoot: true`, `runAsUser: 1000`) and cannot escalate privileges
+  (`allowPrivilegeEscalation: false`).
+solution: |
+  kubectl -n secure patch deployment worker -p '{"spec":{"template":{"spec":{"securityContext":{"runAsNonRoot":true,"runAsUser":1000},"containers":[{"name":"worker","securityContext":{"allowPrivilegeEscalation":false}}]}}}}'
+setup:
+  - kubectl create ns secure
+  - kubectl create deployment worker -n secure --image=alpine -- /bin/sh -c "sleep 3600"
+checks:
+  - desc: Pod template requires a non-root user
+    run: "kubectl -n secure get deploy worker -o jsonpath='{.spec.template.spec.securityContext.runAsNonRoot}'"
+    equals: "true"
+  - desc: Container runs as UID 1000
+    run: "kubectl -n secure get deploy worker -o jsonpath='{.spec.template.spec.securityContext.runAsUser}'"
+    equals: "1000"
+  - desc: Privilege escalation is disabled
+    run: "kubectl -n secure get deploy worker -o jsonpath='{.spec.template.spec.containers[0].securityContext.allowPrivilegeEscalation}'"
+    equals: "false"

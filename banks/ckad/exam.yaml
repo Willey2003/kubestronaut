@@ -1,0 +1,13 @@
+id: ckad
+title: CKAD Application Developer Mock
+engine: mixed
+duration_minutes: 120
+pass_threshold: 0.67
+draw_size: 16
+seed: null
+domains:
+  application-design-build: 0.20
+  application-deployment: 0.20
+  observability-maintenance: 0.15
+  configuration-security: 0.25
+  services-networking: 0.20

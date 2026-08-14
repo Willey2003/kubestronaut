@@ -1,0 +1,88 @@
+name: kubestronaut
+
+services:
+  facilitator:
+    build:
+      context: .
+      dockerfile: images/facilitator.Dockerfile
+    hostname: facilitator
+    restart: unless-stopped
+    ports:
+      - "${GA_BIND:-127.0.0.1}:8901:8900"
+    environment:
+      GA_BANKS: /app/banks
+      GA_STATE: /app/state
+      GA_CONDUCTOR: http://conductor:9001
+    volumes:
+      - ga_state:/app/state
+      - ./banks:/app/banks:ro
+      - ./curriculum:/app/curriculum:ro
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+          cpus: "0.5"
+    depends_on:
+      conductor: { condition: service_healthy }
+
+  conductor:
+    build:
+      context: .
+      dockerfile: images/conductor.Dockerfile
+    hostname: conductor
+    restart: unless-stopped
+    environment:
+      GA_BANKS: /app/banks
+      GA_STATE: /app/state
+      GA_CLUSTER: ${GA_CLUSTER:-local}
+    volumes:
+      - ga_state:/app/state
+      - ./banks:/app/banks:ro
+      # Cluster access for hands-on grading (local oc/kubectl inside the image).
+      - ${KUBECONFIG_DIR:-~/.kube}:/root/.kube:ro
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+          cpus: "0.5"
+
+  registry:
+    image: registry:2
+    hostname: registry
+    restart: unless-stopped
+    ports:
+      - "${GA_BIND:-127.0.0.1}:5101:5000"
+    environment:
+      REGISTRY_STORAGE_DELETE_ENABLED: "true"
+    volumes:
+      - ga_registry:/var/lib/registry
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:5000/v2/"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+          cpus: "0.5"
+
+  # Optional GUI workspace (noVNC). Enabled with `docker compose --profile desktop up -d`.
+  desktop:
+    image: dorowu/ubuntu-desktop-lxde-vnc:latest
+    hostname: desktop
+    profiles: ["desktop"]
+    restart: unless-stopped
+    ports:
+      - "${GA_BIND:-127.0.0.1}:6080:80"
+      - "${GA_BIND:-127.0.0.1}:6081:443"
+    shm_size: "1g"
+    deploy:
+      resources:
+        limits:
+          memory: 2g
+          cpus: "1.0"
+
+volumes:
+  ga_state:
+  ga_registry:

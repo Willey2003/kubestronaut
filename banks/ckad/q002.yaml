@@ -1,0 +1,22 @@
+kind: knowledge
+domain: application-deployment
+level: core
+title: RollingUpdate surge and availability guarantees
+prompt: |
+  A Deployment runs 4 replicas with the default RollingUpdate strategy and
+  `maxUnavailable: 25%`, `maxSurge: 25%`. The image is updated to a new
+  version. Which statement about the rollout is correct?
+options:
+  A: All 4 old Pods are terminated before a single new Pod is created.
+  B: The rollout may run up to 5 Pods at once while never dropping below 3 available old replicas.
+  C: "`maxUnavailable` limits how many new Pods may exceed the replica count."
+  D: The new ReplicaSet is only created after the old one is scaled to zero.
+answer: B
+explanation: |
+  RollingUpdate keeps old Pods serving while new ones start: `maxSurge` caps
+  how many extra Pods may be created beyond the desired count (25% of 4 rounds
+  to at least 1 extra, so up to 5 Pods), and `maxUnavailable` caps how few
+  replicas may be unavailable during the update (25% of 4 means at least 3 old
+  replicas stay available). A and D describe the Recreate strategy, which
+  takes the application fully down first, and C inverts the meaning of the
+  two knobs.

@@ -1,0 +1,31 @@
+kind: hands-on
+domain: prometheus-fundamentals
+level: core
+title: Scrape the node_exporter
+prompt: |
+  A Prometheus server already scrapes itself from localhost:9090. Edit the
+  file prometheus.yml in the current directory so that its scrape_configs
+  also contains a job named "node" that scrapes the node_exporter at
+  localhost:9100 on a 15 second interval. A starter prometheus.yml already
+  exists if one has not been created yet.
+solution: |
+  ```yaml
+  scrape_configs:
+    - job_name: node
+      scrape_interval: 15s
+      static_configs:
+        - targets: ['localhost:9100']
+  ```
+checks:
+  - desc: The node job is present
+    run: "grep -q 'job_name: node' prometheus.yml && echo OK || echo MISSING"
+    equals: OK
+  - desc: The target localhost:9100 is configured
+    run: "grep -q 'localhost:9100' prometheus.yml && echo OK || echo MISSING"
+    equals: OK
+  - desc: The scrape interval is 15 seconds
+    run: "grep -q 'scrape_interval: 15s' prometheus.yml && echo OK || echo MISSING"
+    equals: OK
+  - desc: The YAML parses and the node job targets localhost:9100
+    run: python3 -c "import yaml;d=yaml.safe_load(open('prometheus.yml'));j=[s for s in d['scrape_configs'] if s.get('job_name')=='node'][0];print(j['static_configs'][0]['targets'])"
+    equals: "['localhost:9100']"

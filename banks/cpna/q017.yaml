@@ -1,0 +1,23 @@
+kind: knowledge
+domain: exporters-alerting
+level: core
+title: Choosing the right exporter
+prompt: |
+  You need to verify from outside the cluster that a public HTTPS endpoint
+  responds, that its TLS certificate is valid, and that DNS resolves. Which
+  tool fits this requirement?
+options:
+  A: blackbox_exporter, which actively probes http, https, tcp, dns, and
+    icmp endpoints and exposes the result as Prometheus metrics.
+  B: node_exporter, because it reports TCP and DNS stats for the host.
+  C: The Pushgateway, because it stores the results of the probe.
+  D: cAdvisor, because it tracks per-container network traffic.
+answer: A
+explanation: |
+  blackbox_exporter performs active "black-box" checks from the outside and
+  exposes metrics such as probe_success, probe_duration_seconds, and TLS
+  certificate metadata. node_exporter reports the host's own metrics (CPU,
+  memory, disk, network counters), the Pushgateway is a holding area for
+  short-lived batch job metrics, and cAdvisor exposes container-level
+  resource usage. Choose the tool that matches the view you need:
+  self-reported versus external.

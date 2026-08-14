@@ -1,0 +1,37 @@
+kind: knowledge
+domain: containers-orchestration
+level: quick
+title: Horizontal autoscaling with the HPA
+prompt: |
+  A web service peaks at lunchtime and is idle at night. The team wants replica
+  counts to follow actual load automatically rather than manually changing
+  replicas. Which Kubernetes mechanism directly provides this?
+options:
+  A: "HorizontalPodAutoscaler, which adjusts replicas based on observed metrics such as CPU, memory, or custom metrics."
+  B: "The vertical pod autoscaler only, which adds more CPU to existing pods."
+  C: "Manual kubectl scale run on a cron schedule."
+  D: "The scheduler deciding replica counts from pod annotations."
+answer: A
+explanation: |
+  The HorizontalPodAutoscaler watches metrics (CPU, memory, or custom/external
+  metrics exposed via the metrics API) and adjusts the number of pod replicas
+  in a workload to keep utilization near a target. The VPA changes resource
+  requests of existing pods rather than replica count, and the scheduler does
+  not choose replica counts.
+solution: |
+  The HorizontalPodAutoscaler (HPA) observes utilization through the metrics
+  API, with CPU and memory by default plus custom or external metrics, and
+  computes the replica count needed to reach a target utilization, then updates
+  the workload's replicas automatically. It can be paired with cluster
+  autoscaling so that nodes, not just pods, also grow when capacity is
+  exhausted. The VPA is a different tool: it adjusts the CPU and memory
+  requests of existing pods instead of changing replica counts.
+checks:
+  - desc: Names the HPA
+    contains: "HorizontalPodAutoscaler"
+  - desc: Mentions metrics-driven decisions
+    contains: "metrics"
+  - desc: Mentions CPU and memory
+    contains: "CPU"
+  - desc: Distinguishes from the VPA
+    contains: "VPA"

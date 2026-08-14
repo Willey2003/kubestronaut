@@ -1,0 +1,57 @@
+kind: hands-on
+domain: services-networking
+level: core
+title: Expose a Deployment with a ClusterIP Service
+prompt: |
+  Namespace `ckad-q15` does not exist yet — create it as part of this task.
+  Create a Deployment named `web` in namespace `ckad-q15` running 2 replicas
+  of image `nginx:1.25` with the label `app=web` and container port 80. Then
+  create a Service named `web-svc` in the same namespace of type `ClusterIP`
+  that selects pods labelled `app=web`, listens on port 80 and targets
+  container port 80. Wait for the Deployment rollout so the Service has live
+  Endpoints.
+solution: |
+  kubectl create namespace ckad-q15
+  cat <<'EOF' | kubectl apply -f -
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: web
+    namespace: ckad-q15
+  spec:
+    replicas: 2
+    selector:
+      matchLabels:
+        app: web
+    template:
+      metadata:
+        labels:
+          app: web
+      spec:
+        containers:
+          - name: web
+            image: nginx:1.25
+            ports:
+              - containerPort: 80
+  EOF
+  kubectl -n ckad-q15 rollout status deployment/web --timeout=90s
+  kubectl -n ckad-q15 expose deployment web --name=web-svc --port=80 --target-port=80
+checks:
+  - desc: Deployment web exists in ckad-q15
+    run: kubectl -n ckad-q15 get deployment web -o name
+    equals: deployment.apps/web
+  - desc: Service web-svc exists in ckad-q15
+    run: kubectl -n ckad-q15 get service web-svc -o name
+    equals: service/web-svc
+  - desc: Service type is ClusterIP
+    run: kubectl -n ckad-q15 get service web-svc -o jsonpath='{.spec.type}'
+    equals: ClusterIP
+  - desc: Service selects pods labelled app=web
+    run: kubectl -n ckad-q15 get service web-svc -o jsonpath='{.spec.selector.app}'
+    equals: web
+  - desc: Service listens on port 80
+    run: kubectl -n ckad-q15 get service web-svc -o jsonpath='{.spec.ports[0].port}'
+    equals: 80
+  - desc: Service has live Endpoints
+    run: kubectl -n ckad-q15 get endpoints web-svc -o jsonpath='{.subsets[0].addresses}'
+    non-empty: true

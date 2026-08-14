@@ -1,0 +1,39 @@
+kind: knowledge
+domain: cloud-native-networking
+level: core
+title: Ingress for external HTTP routing
+prompt: |
+  The platform exposes several HTTP APIs and a web UI on the same cluster, each
+  as its own Service. The team wants one externally reachable entry point that
+  routes by hostname and path, and terminates TLS. Which resource provides
+  this, and what else must run in the cluster?
+options:
+  A: "An Ingress resource with host/path routing rules, backed by an Ingress controller (e.g. NGINX) that implements the rules and terminates TLS."
+  B: "A ConfigMap that stores the hostnames."
+  C: "A NodePort Service per application, with no routing rules."
+  D: "A second cluster per application."
+answer: A
+explanation: |
+  The Ingress resource declares host- and path-based routing rules and TLS
+  configuration, but it is declarative: an Ingress controller (such as
+  ingress-nginx or a cloud load balancer controller) watches Ingress objects
+  and programs the actual routing. Alternatives like NodePort or LoadBalancer
+  Services expose services without host/path routing.
+solution: |
+  The team needs an Ingress. The Ingress resource is a declarative set of rules
+  that route requests by hostname and path to backend Services and can
+  configure TLS certificates. Ingress alone does nothing: an Ingress controller
+  (such as ingress-nginx or a cloud-provider load balancer controller) must run
+  in the cluster and watch Ingress objects, programming the proxy that
+  terminates TLS and forwards traffic according to the rules. Because routing
+  lives in the cluster, teams can map `api.example.com/orders` to one Service
+  and `www.example.com` to another through a single entry point.
+checks:
+  - desc: Names the Ingress resource
+    contains: "Ingress"
+  - desc: Mentions hostname and path routing
+    contains: "path"
+  - desc: Mentions an Ingress controller
+    contains: "Ingress controller"
+  - desc: Mentions TLS termination
+    contains: "TLS"

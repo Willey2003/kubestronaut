@@ -1,0 +1,37 @@
+kind: knowledge
+domain: kubernetes-resources
+level: quick
+title: Why Pods, not containers, are scheduled
+prompt: |
+  An engineer writes a manifest that lists two related processes as two
+  separate Pods and is surprised that Kubernetes treats them as independent
+  units that may land on different nodes. Which fundamental Kubernetes concept
+  is the engineer misunderstanding?
+options:
+  A: "Kubernetes schedules Pods, and containers in the same Pod are always co-scheduled and share a network namespace and optionally storage."
+  B: "Kubernetes schedules containers independently, one per node."
+  C: "Pods are a virtualization layer with per-container kernels."
+  D: "Containers in different Pods automatically share their network namespaces."
+answer: A
+explanation: |
+  The Pod is the smallest scheduling unit in Kubernetes. Containers inside the
+  same Pod are always placed on the same node, share the same network
+  namespace (so they can talk on `localhost`), and can share volumes. Two
+  separate Pods are independent units that the scheduler can place anywhere and
+  that have separate IPs.
+solution: |
+  The Pod is the smallest deployable and schedulable unit in Kubernetes;
+  Kubernetes never schedules a bare container. Containers declared in the same
+  Pod are always co-located on one node, share one network namespace so they
+  can reach each other on localhost, and can mount the same volumes. Processes
+  that belong together belong in one Pod, while independent processes should be
+  separate Pods so they can scale and be placed independently.
+checks:
+  - desc: States the Pod is the smallest unit
+    contains: "smallest"
+  - desc: Mentions co-location on one node
+    contains: "co-located"
+  - desc: Mentions shared network namespace
+    contains: "network namespace"
+  - desc: Mentions localhost communication
+    contains: "localhost"

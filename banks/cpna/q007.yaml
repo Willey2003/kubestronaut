@@ -1,0 +1,25 @@
+kind: knowledge
+domain: prometheus-fundamentals
+level: core
+title: Service discovery in Kubernetes
+prompt: |
+  In a Kubernetes cluster, pods come and go and IP addresses change
+  constantly. Which approach lets Prometheus keep tracking your application
+  targets without manual edits?
+options:
+  A: kubernetes_sd_configs, which asks the Kubernetes API for services,
+    endpoints, or pods and refreshes the target list automatically as they
+    change.
+  B: Hardcoding every pod IP into static_configs and restarting Prometheus
+    whenever anything moves.
+  C: Scraping a fixed target such as localhost because Prometheus runs
+    inside the cluster.
+  D: Having the kubelet push metrics to Prometheus on every pod event.
+answer: A
+explanation: |
+  Service discovery lets Prometheus query an external source-the Kubernetes
+  API, Consul, DNS, EC2, and others-and rebuild its target list on a
+  schedule. With kubernetes_sd_configs you can follow services, endpoints,
+  or pods, and targets appear or disappear automatically as the cluster
+  changes. This removes the manual chore of maintaining static target
+  lists for churning infrastructure.

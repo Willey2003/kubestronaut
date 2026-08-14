@@ -1,0 +1,41 @@
+kind: hands-on
+domain: observability-maintenance
+level: deep
+title: Inspect a running Pod with logs and exec
+prompt: |
+  Namespace `ckad-q11` does not exist yet — create it as part of this task.
+  Create a Pod named `logger` in namespace `ckad-q11` using image
+  `busybox:1.36` whose command prints the line `STARTED` to stdout and then
+  sleeps (`sh -c "echo STARTED; sleep 3600"`). Once it is running, inspect the
+  Pod: print its logs with `kubectl logs` and use `kubectl exec` to print the
+  Pod's hostname.
+solution: |
+  kubectl create namespace ckad-q11
+  cat <<'EOF' | kubectl apply -f -
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: logger
+    namespace: ckad-q11
+  spec:
+    containers:
+      - name: logger
+        image: busybox:1.36
+        command: ["sh", "-c", "echo STARTED; sleep 3600"]
+  EOF
+  kubectl -n ckad-q11 wait --for=condition=Ready pod/logger --timeout=60s
+  kubectl -n ckad-q11 logs logger
+  kubectl -n ckad-q11 exec logger -- hostname
+checks:
+  - desc: Pod logger exists in ckad-q11
+    run: kubectl -n ckad-q11 get pod logger -o name
+    equals: pod/logger
+  - desc: Pod is Running
+    run: kubectl -n ckad-q11 get pod logger -o jsonpath='{.status.phase}'
+    equals: Running
+  - desc: Logs show the STARTED line
+    run: kubectl -n ckad-q11 logs logger
+    contains: STARTED
+  - desc: exec returns the container hostname
+    run: kubectl -n ckad-q11 exec logger -- hostname
+    non-empty: true

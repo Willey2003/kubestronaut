@@ -1,0 +1,23 @@
+kind: hands-on
+domain: threat-modeling
+level: core
+title: Record data classification labels for a sensitive namespace
+prompt: |
+  Namespace `core-banking` hosts a service that processes customer personal
+  data. To make the data classification machine-readable for the threat model,
+  label the namespace with `data-classification=restricted` and
+  `data-residency=eu`.
+solution: |
+  kubectl label ns core-banking data-classification=restricted data-residency=eu
+setup:
+  - kubectl create ns core-banking
+checks:
+  - desc: Namespace exists
+    run: kubectl get ns core-banking -o name
+    equals: namespace/core-banking
+  - desc: Data classification label is set
+    run: "kubectl get ns core-banking -o jsonpath='{.metadata.labels.data-classification}'"
+    equals: restricted
+  - desc: Data residency label is set
+    run: "kubectl get ns core-banking -o jsonpath='{.metadata.labels.data-residency}'"
+    equals: eu

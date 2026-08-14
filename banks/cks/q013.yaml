@@ -1,0 +1,48 @@
+kind: hands-on
+domain: supply-chain
+level: deep
+title: Require pinned image digests with a validating admission policy
+prompt: |
+  Create a ValidatingAdmissionPolicy named `require-image-digest` that rejects
+  any Pod CREATE whose container images are not pinned by a SHA256 digest, and
+  a ValidatingAdmissionPolicyBinding named `require-image-digest-binding` that
+  applies it to `pods` with a Deny action.
+solution: |
+  cat <<'EOF' | kubectl apply -f -
+  apiVersion: admissionregistration.k8s.io/v1
+  kind: ValidatingAdmissionPolicy
+  metadata:
+    name: require-image-digest
+  spec:
+    failurePolicy: Fail
+    matchConstraints:
+      resourceRules:
+        - apiGroups: [""]
+          apiVersions: ["v1"]
+          operations: ["CREATE"]
+          resources: ["pods"]
+    validations:
+      - expression: object.spec.containers.all(c, c.image.contains("@sha256:"))
+        message: container images must be pinned by a sha256 digest
+  ---
+  apiVersion: admissionregistration.k8s.io/v1
+  kind: ValidatingAdmissionPolicyBinding
+  metadata:
+    name: require-image-digest-binding
+  spec:
+    policyName: require-image-digest
+    validationActions: [Deny]
+  EOF
+checks:
+  - desc: ValidatingAdmissionPolicy require-image-digest exists
+    run: kubectl get validatingadmissionpolicy require-image-digest -o name
+    equals: validatingadmissionpolicy.admissionregistration.k8s.io/require-image-digest
+  - desc: Validation expression requires a sha256 digest
+    run: kubectl get validatingadmissionpolicy require-image-digest -o jsonpath='{.spec.validations[0].expression}'
+    contains: '@sha256:'
+  - desc: ValidatingAdmissionPolicyBinding require-image-digest-binding exists
+    run: kubectl get validatingadmissionpolicybinding require-image-digest-binding -o name
+    equals: validatingadmissionpolicybinding.admissionregistration.k8s.io/require-image-digest-binding
+  - desc: Binding references the require-image-digest policy
+    run: kubectl get validatingadmissionpolicybinding require-image-digest-binding -o jsonpath='{.spec.policyName}'
+    equals: require-image-digest

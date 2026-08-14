@@ -1,0 +1,21 @@
+kind: knowledge
+domain: promql
+level: core
+title: Aggregation with by and without
+prompt: |
+  node_cpu_seconds_total carries labels for instance, cpu, and mode. Which
+  query reports the total CPU seconds consumed by each instance, summed
+  across all CPUs and modes?
+options:
+  A: sum(node_cpu_seconds_total) by (instance)
+  B: sum(node_cpu_seconds_total) without (instance)
+  C: rate(node_cpu_seconds_total) by (instance)
+  D: sum(node_cpu_seconds_total) by (cpu)
+answer: A
+explanation: |
+  sum() collapses the series and by (instance) keeps only the instance
+  label in the result, merging every cpu and mode series per instance.
+  Option B removes instance and therefore sums across instances, leaving one
+  total per cpu and mode; option D keeps cpu instead of instance; option C
+  computes a rate rather than a sum. Aggregators such as sum, avg, max,
+  min, and count use by (labels to keep) or without (labels to drop).

@@ -1,0 +1,25 @@
+kind: hands-on
+domain: cluster-architecture
+level: core
+title: Back up the etcd datastore
+prompt: |
+  Create a snapshot of the cluster's etcd datastore and save it to
+  `/opt/backup/etcd-snapshot.db`. Connect to the etcd client endpoint
+  `https://127.0.0.1:2379` using the CA certificate
+  `/etc/kubernetes/pki/etcd/ca.crt`, the etcd server certificate
+  `/etc/kubernetes/pki/etcd/server.crt` and its key
+  `/etc/kubernetes/pki/etcd/server.key`. Use the snapshot API of etcdctl
+  (ETCDCTL_API=3).
+solution: |
+  ETCDCTL_API=3 etcdctl --endpoints=https://127.0.0.1:2379 \
+    --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+    --cert=/etc/kubernetes/pki/etcd/server.crt \
+    --key=/etc/kubernetes/pki/etcd/server.key \
+    snapshot save /opt/backup/etcd-snapshot.db
+checks:
+  - desc: Snapshot file exists at the required path
+    run: test -f /opt/backup/etcd-snapshot.db
+    exit-success: true
+  - desc: Snapshot file is not empty
+    run: stat -c %s /opt/backup/etcd-snapshot.db
+    not-equals: 0

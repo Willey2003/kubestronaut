@@ -1,0 +1,18 @@
+id: cks
+title: CKS Security Specialist Mock
+engine: mixed
+duration_minutes: 120
+pass_threshold: 0.67
+draw_size: 16
+seed: null
+domains:
+  cluster-setup: 0.15
+  cluster-hardening: 0.15
+  system-hardening: 0.15
+  microservice-vulns: 0.20
+  supply-chain: 0.20
+  runtime-security: 0.15
+levels:
+  quick: 0.25
+  core: 0.5
+  deep: 0.25

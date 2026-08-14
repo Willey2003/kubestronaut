@@ -1,0 +1,20 @@
+kind: knowledge
+domain: cluster-security
+level: quick
+title: Which identity does a pod use by default when calling the Kubernetes API
+prompt: |
+  A pod makes authenticated API calls from inside the cluster. Unless
+  configured otherwise, which identity does the kubelet attach to the pod's
+  requests?
+options:
+  A: The ServiceAccount of the pod's namespace, defaulting to `default`
+  B: The kubelet's node certificate
+  C: A cluster-admin user
+  D: The container image's manifest digest
+answer: A
+explanation: |
+  Every namespace has a `default` ServiceAccount, and unless a pod sets
+  `spec.serviceAccountName` it is bound to that account. The kubelet's
+  certificate authenticates the kubelet itself, not the pod, and RBAC
+  permissions are granted to the ServiceAccount, so assigning a dedicated
+  least-privilege ServiceAccount per workload is a core hardening step.

@@ -1,0 +1,41 @@
+kind: knowledge
+domain: observability
+level: core
+title: The three pillars of observability
+prompt: |
+  An SRE needs to answer three different questions during an incident: how
+  much memory was the pod using over the last hour, what did the application
+  log at the moment of the crash, and exactly which call path across services
+  caused a slowdown. Which categories of telemetry answer each question, and
+  what are they collectively called?
+options:
+  A: "Metrics answer resource/behavior questions over time, logs capture discrete events, and distributed traces follow a request across services; together they are the three pillars of observability."
+  B: "Only logs are needed for everything."
+  C: "Metrics alone can reconstruct the full request path."
+  D: "Traces replace all log output."
+answer: A
+explanation: |
+  The three pillars of observability are metrics (numeric time series such as
+  CPU and error rates), logs (timestamped discrete events), and distributed
+  traces (request lifecycles across services). Each answers a different
+  question: metrics for trends and thresholds, logs for details of an event,
+  traces for cross-service latency and call paths. Production systems typically
+  combine all three and correlate them by request ID.
+solution: |
+  The three pillars of observability are metrics, logs, and distributed traces.
+  Metrics are numeric time series that answer questions about resource usage
+  and behavior over time, such as memory utilization over the past hour, and
+  they drive alerting. Logs are timestamped discrete events that capture what
+  the application did at the moment of a crash. Distributed traces follow a
+  single request across every service it touches, showing per-hop latency and
+  the exact call path during a slowdown. Teams correlate the three, often by a
+  shared request ID, to reconstruct an incident end to end.
+checks:
+  - desc: Names metrics as a pillar
+    contains: "metrics"
+  - desc: Names logs as a pillar
+    contains: "logs"
+  - desc: Names distributed traces
+    contains: "traces"
+  - desc: Mentions correlating them
+    contains: "correlate"

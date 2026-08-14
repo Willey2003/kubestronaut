@@ -1,0 +1,38 @@
+kind: hands-on
+domain: cluster-setup
+level: deep
+title: Run the CIS Kubernetes Benchmark with kube-bench
+prompt: |
+  You must assess the control plane and node configuration against the CIS
+  Kubernetes Benchmark. Create a Job named `kube-bench` in namespace
+  `kube-system` using the official `aquasec/kube-bench:latest` image and a
+  restart policy of `Never`.
+solution: |
+  cat <<'EOF' | kubectl apply -f -
+  apiVersion: batch/v1
+  kind: Job
+  metadata:
+    name: kube-bench
+    namespace: kube-system
+  spec:
+    backoffLimit: 0
+    template:
+      spec:
+        restartPolicy: Never
+        containers:
+          - name: kube-bench
+            image: aquasec/kube-bench:latest
+  EOF
+checks:
+  - desc: Job kube-bench exists in kube-system
+    run: kubectl -n kube-system get job kube-bench -o name
+    equals: job.batch/kube-bench
+  - desc: Job uses the kube-bench image
+    run: kubectl -n kube-system get job kube-bench -o jsonpath='{.spec.template.spec.containers[0].image}'
+    contains: aquasec/kube-bench
+  - desc: Pod restart policy is Never
+    run: kubectl -n kube-system get job kube-bench -o jsonpath='{.spec.template.spec.restartPolicy}'
+    equals: Never
+  - desc: Job runs exactly one pod to completion
+    run: kubectl -n kube-system get job kube-bench -o jsonpath='{.spec.completions}'
+    equals: 1

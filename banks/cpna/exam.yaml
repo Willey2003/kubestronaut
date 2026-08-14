@@ -1,0 +1,13 @@
+domains:
+  exporters-alerting: 0.1
+  grafana: 0.1
+  observability-fundamentals: 0.2
+  prometheus-fundamentals: 0.4
+  promql: 0.2
+draw_size: 18
+duration_minutes: 90
+engine: mixed
+id: cpna
+pass_threshold: 0.7
+seed: null
+title: Cloud Native Monitoring (Prometheus + Grafana)

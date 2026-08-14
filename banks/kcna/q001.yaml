@@ -1,0 +1,39 @@
+kind: knowledge
+domain: cloud-native-architecture
+level: quick
+title: What "cloud native" means
+prompt: |
+  A VP asks the platform team to include a working definition of "cloud
+  native" in the company's technical strategy. An engineer argues it simply
+  means "running workloads on a public cloud provider," while an architect
+  insists it describes an architectural approach. Which statement best
+  captures the accepted cloud-native definition?
+options:
+  A: "Applications built as microservices packaged in containers, orchestrated on elastic infrastructure, with CI/CD and automated delivery."
+  B: "Any application that runs inside a virtual machine hosted by AWS, Azure, or GCP."
+  C: "A legacy monolithic application that has been moved to a server."
+  D: "Software that is rewritten every year to chase the newest framework."
+answer: A
+explanation: |
+  The CNCF defines cloud native as a set of practices: microservices packaged
+  in containers, orchestrated and managed on elastic, scalable infrastructure,
+  and delivered through CI/CD with declarative, automated processes. It is an
+  architectural and operational approach, not a statement about which vendor
+  hosts the workload. B describes hosting, not architecture, and C and D have
+  nothing to do with the definition.
+solution: |
+  The CNCF defines "cloud native" as an approach in which applications are
+  built as loosely coupled microservices, packaged in containers, and
+  orchestrated and managed on elastic, scalable infrastructure using automated
+  CI/CD delivery and declarative APIs. Being cloud native is about architecture
+  and operating model, not about which provider hosts the workload. It
+  emphasizes portability, resilience, and speed of delivery.
+checks:
+  - desc: Cites the CNCF definition
+    contains: "CNCF"
+  - desc: Names microservices and containers
+    contains: "microservices"
+  - desc: Names containers
+    contains: "containers"
+  - desc: Mentions orchestration
+    contains: "orchestrated"

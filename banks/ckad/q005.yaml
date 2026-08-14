@@ -1,0 +1,22 @@
+kind: knowledge
+domain: services-networking
+level: core
+title: DNS-based discovery with a headless Service
+prompt: |
+  A client needs to resolve the individual Pod IPs of a set of Pods through
+  cluster DNS so it can talk to each Pod directly. A Service with
+  `clusterIP: None` is created. How does this headless Service behave?
+options:
+  A: It receives a virtual ClusterIP that load-balances requests across the selected Pods.
+  B: It publishes DNS A/AAAA records that resolve directly to the IPs of the selected Pods, and the Service has no ClusterIP.
+  C: It cannot select Pods and therefore always has empty Endpoints.
+  D: It must be type LoadBalancer to publish individual Pod IPs in DNS.
+answer: B
+explanation: |
+  A headless Service (`clusterIP: None`) skips the kube-proxy virtual IP
+  entirely: the DNS name `svc.namespace.svc.cluster.local` resolves to the
+  individual Pod IPs selected by the Service, which is how StatefulSet clients
+  discover each Pod directly. Option A describes a normal ClusterIP Service,
+  and a headless Service selects Pods normally (C is wrong). LoadBalancer
+  services still front a ClusterIP and do not publish per-Pod DNS records, so
+  D is wrong too.

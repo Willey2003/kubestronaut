@@ -1,0 +1,38 @@
+kind: knowledge
+domain: cloud-native-architecture
+level: core
+title: Immutable infrastructure
+prompt: |
+  A security advisory requires an OS library update on 40 nodes. One operator
+  proposes SSHing into each node and running `apt/yum update`; another proposes
+  building fresh node images and replacing the nodes. Which practice aligns
+  with cloud-native principles and why?
+options:
+  A: "SSH patching, because it changes nodes in place with minimal disruption."
+  B: "Rebuilding nodes from a golden image and replacing them, because infrastructure is immutable and recreated rather than modified."
+  C: "Deleting the nodes and letting the scheduler figure out the rest."
+  D: "Pausing the cluster while an automated script patches every node."
+answer: B
+explanation: |
+  Immutable infrastructure treats servers as disposable artifacts: change is
+  made by building a new image and redeploying, never by patching in place.
+  This makes environments reproducible from a versioned image, removes
+  configuration drift, and makes rollbacks trivial. SSH patching (A) creates
+  drift and unproven state; C and D are unsafe or wasteful.
+solution: |
+  The operator should treat nodes as immutable: build a fresh image containing
+  the patched library, publish it to an artifact store, and replace the running
+  nodes from that image. Immutable infrastructure means change happens by
+  recreating components, not by in-place modification, so every environment is
+  reproducible from a versioned artifact and configuration drift is eliminated.
+  Rolling back is simply redeploying the previous image instead of un-patching
+  every node by hand.
+checks:
+  - desc: Names immutable infrastructure
+    contains: "immutable"
+  - desc: Mentions recreation rather than in-place patching
+    contains: "recreat"
+  - desc: Mentions reproducible versioned artifacts
+    contains: "reproducible"
+  - desc: Notes drift elimination
+    contains: "drift"

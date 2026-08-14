@@ -1,0 +1,26 @@
+kind: knowledge
+domain: observability-fundamentals
+level: deep
+title: SLI vs SLO vs SLA
+prompt: |
+  A platform team publishes availability commitments to its customers.
+  Which statement correctly distinguishes an SLI, an SLO, and an SLA?
+options:
+  A: An SLI is a measured signal (for example, the fraction of requests
+    answered in under 500 ms); an SLO is the target threshold for that SLI
+    (for example, 99.9% per rolling month); an SLA is the contractual
+    agreement with customers, often carrying consequences if the SLO is
+    breached.
+  B: An SLO is a measured value, an SLI is a target threshold, and an SLA
+    is exactly the same thing as an SLO.
+  C: An SLA is an internal target with no consequences, while an SLI is the
+    contract offered to customers.
+  D: SLI, SLO, and SLA are three interchangeable names for the same number.
+answer: A
+explanation: |
+  SLI (service level indicator) is the concrete measurement; SLO (service
+  level objective) is the target you commit to internally, usually
+  expressed as a percentage over a window; SLA (service level agreement) is
+  the customer-facing contract that can include compensation for missed
+  SLOs. Mixing the three up (options B-D) is a classic source of monitoring
+  confusion: you can only alert on an SLO that has been derived from an SLI.

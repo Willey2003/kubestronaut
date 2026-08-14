@@ -1,0 +1,51 @@
+kind: hands-on
+domain: application-deployment
+level: deep
+title: Roll a Deployment back to its previous revision
+prompt: |
+  Namespace `ckad-q09` does not exist yet — create it as part of this task.
+  Create a Deployment named `app` in namespace `ckad-q09` running 3 replicas
+  of image `nginx:1.25` (container name `app`). Update the image to
+  `nginx:1.27` and wait for that rollout to finish. Then roll the Deployment
+  back to the previous revision (`kubectl rollout undo`) so it runs
+  `nginx:1.25` again, and wait for that rollout too. The final state must have
+  all 3 replicas ready on the rolled-back image.
+solution: |
+  kubectl create namespace ckad-q09
+  cat <<'EOF' | kubectl apply -f -
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: app
+    namespace: ckad-q09
+  spec:
+    replicas: 3
+    selector:
+      matchLabels:
+        app: app
+    template:
+      metadata:
+        labels:
+          app: app
+      spec:
+        containers:
+          - name: app
+            image: nginx:1.25
+  EOF
+  kubectl -n ckad-q09 set image deployment/app app=nginx:1.27
+  kubectl -n ckad-q09 rollout status deployment/app --timeout=90s
+  kubectl -n ckad-q09 rollout undo deployment/app
+  kubectl -n ckad-q09 rollout status deployment/app --timeout=90s
+checks:
+  - desc: Deployment app exists in ckad-q09
+    run: kubectl -n ckad-q09 get deployment app -o name
+    equals: deployment.apps/app
+  - desc: Deployment runs image nginx:1.25 after the rollback
+    run: kubectl -n ckad-q09 get deployment app -o jsonpath='{.spec.template.spec.containers[0].image}'
+    equals: nginx:1.25
+  - desc: All 3 replicas are ready
+    run: kubectl -n ckad-q09 get deployment app -o jsonpath='{.status.readyReplicas}'
+    equals: 3
+  - desc: Rollout completed successfully
+    run: kubectl -n ckad-q09 rollout status deployment/app --timeout=90s
+    exit-success: true

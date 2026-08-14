@@ -1,0 +1,39 @@
+kind: knowledge
+domain: cloud-native-networking
+level: core
+title: Services and cluster DNS
+prompt: |
+  A frontend Pod must call a backend Pod at a stable address that survives pod
+  restarts. Backend pods have dynamic IPs and scale up and down. Which
+  mechanism provides a stable name and load-balanced IP in front of the backend
+  pods, and how do pods resolve it?
+options:
+  A: "A Service with a label selector: it provides a stable ClusterIP and name, tracks Pods through Endpoints, and CoreDNS resolves service.namespace.svc.cluster.local."
+  B: "Hard-coding the backend pod IP in the frontend."
+  C: "A DaemonSet that rewrites /etc/hosts on every node."
+  D: "Using the Deployment name directly as an IP address."
+answer: A
+explanation: |
+  A Service selects backend Pods by label, maintains an Endpoints object with
+  the current pod IPs, and exposes a stable ClusterIP and DNS name. Cluster DNS
+  (CoreDNS) resolves names of the form `service.namespace.svc.cluster.local`,
+  so clients can rely on a stable name while pod IPs churn. Service types
+  include ClusterIP (default), NodePort, LoadBalancer, and ExternalName.
+solution: |
+  A Service fronts the backend Pods with a stable virtual IP and name. The
+  Service's label selector determines which Pods are targets, and an Endpoints
+  object tracks their current IPs as pods scale and restart. Cluster DNS,
+  provided by CoreDNS, resolves the name
+  `service.namespace.svc.cluster.local` from anywhere in the cluster, so the
+  frontend can use a stable DNS name while individual pod IPs change. Common
+  Service types are ClusterIP, NodePort, and LoadBalancer, plus ExternalName
+  for external references.
+checks:
+  - desc: Names the Service as the stable frontend
+    contains: "Service"
+  - desc: Mentions Endpoints tracking pod IPs
+    contains: "Endpoints"
+  - desc: Names CoreDNS and the DNS name
+    contains: "CoreDNS"
+  - desc: Mentions a stable ClusterIP
+    contains: "ClusterIP"

@@ -1,0 +1,21 @@
+kind: knowledge
+domain: runtime-security
+level: core
+title: How does Falco observe system activity
+prompt: |
+  Falco runs as a DaemonSet in the cluster and fires alerts when a container
+  behaves unexpectedly, for example by spawning an interactive shell. How does
+  Falco obtain the signal it evaluates against its rules?
+options:
+  A: It parses the audit logs that the kubelet emits for each container
+  B: It uses a kernel module or eBPF probe to capture system calls in the kernel
+  C: It polls `kubectl get events` in a tight loop
+  D: It reads the container runtime's socket directly
+answer: B
+explanation: |
+  Falco taps the kernel with a kernel module or modern eBPF probe to capture
+  system calls for every running process, then evaluates them against its
+  rules, which is why it can detect syscalls such as `execve` inside a
+  container. Kubelet audit logs cover only requests to the kube-apiserver, not
+  syscalls; polling events or reading a runtime socket would miss most of the
+  activity Falco monitors.

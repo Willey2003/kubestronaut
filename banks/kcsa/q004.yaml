@@ -1,0 +1,22 @@
+kind: knowledge
+domain: supply-chain
+level: deep
+title: Which pair provides component transparency and proof of image origin
+prompt: |
+  A compliance team needs (1) a machine-readable inventory of every component
+  inside a container image and (2) cryptographic proof of who built it and that
+  it was not altered in transit. Which pair of mechanisms satisfies both
+  requirements?
+options:
+  A: An SBOM plus a signed attestation verified before deployment
+  B: A unique image tag plus a private registry login
+  C: A Dockerfile plus a build-layer cache
+  D: Registry scanning plus a resource quota
+answer: A
+explanation: |
+  A Software Bill of Materials (SBOM) inventories the components inside an
+  image, while signing (for example with cosign) and SLSA provenance
+  attestations give cryptographically verifiable evidence of origin and
+  integrity. Tags are mutable, registry authentication only controls who can
+  pull, and scanning reports vulnerabilities rather than provenance, so none
+  of the other options prove both transparency and origin.

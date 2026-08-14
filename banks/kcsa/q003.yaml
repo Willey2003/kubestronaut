@@ -1,0 +1,21 @@
+kind: knowledge
+domain: supply-chain
+level: quick
+title: Which practice detects known vulnerabilities in an image before deploy
+prompt: |
+  A pipeline must reject container images that contain known Common
+  Vulnerabilities and Exposures (CVEs) before they are deployed. Which practice
+  directly provides this check?
+options:
+  A: Scanning the image against a CVE feed at build time or in the registry
+  B: Signing the image with a private key
+  C: Tagging every build with a unique version
+  D: Running the container as a non-root user
+answer: A
+explanation: |
+  Image scanning compares installed packages and binaries against CVE feeds
+  and reports known vulnerabilities, so it is the direct control for this
+  requirement. Signing proves origin and integrity but not the absence of
+  flaws, unique tags improve traceability, and running non-root limits the
+  blast radius of a compromise instead of preventing deployment of a
+  vulnerable image.

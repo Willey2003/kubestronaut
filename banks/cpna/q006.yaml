@@ -1,0 +1,29 @@
+kind: knowledge
+domain: prometheus-fundamentals
+level: core
+title: scrape_configs, jobs, and instances
+prompt: |
+  You add the following to prometheus.yml. Which statement about it is
+  correct?
+
+  ```yaml
+  scrape_configs:
+    - job_name: api
+      static_configs:
+        - targets: ['api-a:8080', 'api-b:8080']
+  ```
+options:
+  A: job_name is required; Prometheus labels every scraped series with
+    job="api", and each target receives an instance label holding its
+    host:port (api-a:8080 or api-b:8080).
+  B: job_name is optional and defaults to the first target's hostname.
+  C: The instance label always contains the hostname only, never the port.
+  D: static_configs can only ever contain one target.
+answer: A
+explanation: |
+  job_name is the only required field of a scrape_config and becomes the
+  job label on every series scraped by that job. Each target in
+  static_configs is scraped and tagged with an instance label equal to its
+  host:port, so job and instance are the two labels every target carries.
+  Service discovery (kubernetes_sd_configs and friends) simply replaces the
+  static target list with targets discovered from an external API.

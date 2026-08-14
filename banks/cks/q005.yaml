@@ -1,0 +1,26 @@
+kind: hands-on
+domain: cluster-hardening
+level: core
+title: Grant a least-privilege Pod read role
+prompt: |
+  ServiceAccount `deploy-bot` already exists in namespace `lab-rbac`. Create a
+  Role named `pod-reader` in `lab-rbac` that permits only `get`, `list`, and
+  `watch` on Pods, then bind it to `deploy-bot` with a RoleBinding named
+  `pod-reader-binding`.
+solution: |
+  kubectl -n lab-rbac create role pod-reader --verb=get,list,watch --resource=pods
+  kubectl -n lab-rbac create rolebinding pod-reader-binding \
+    --role=pod-reader --serviceaccount=lab-rbac:deploy-bot
+checks:
+  - desc: Role pod-reader exists in lab-rbac
+    run: kubectl -n lab-rbac get role pod-reader -o name
+    equals: role.rbac.authorization.k8s.io/pod-reader
+  - desc: Role grants access to pods only
+    run: kubectl -n lab-rbac get role pod-reader -o jsonpath='{.rules[0].resources}'
+    contains: pods
+  - desc: RoleBinding references the pod-reader role
+    run: kubectl -n lab-rbac get rolebinding pod-reader-binding -o jsonpath='{.roleRef.name}'
+    equals: pod-reader
+  - desc: RoleBinding is bound to the deploy-bot service account
+    run: kubectl -n lab-rbac get rolebinding pod-reader-binding -o jsonpath='{.subjects[0].name}'
+    equals: deploy-bot

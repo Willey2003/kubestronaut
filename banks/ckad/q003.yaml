@@ -1,0 +1,20 @@
+kind: knowledge
+domain: observability-maintenance
+level: quick
+title: Immediate effect of a failing readinessProbe
+prompt: |
+  A Pod is running but its container keeps failing the readinessProbe. What is
+  the immediate effect of the failed readiness check?
+options:
+  A: The kubelet kills the container and restarts it.
+  B: The Pod is removed from the Service's Endpoints until the probe starts succeeding.
+  C: The ReplicaSet scales the Deployment down to zero replicas.
+  D: The scheduler evicts the Pod from the node.
+answer: B
+explanation: |
+  A readinessProbe only decides whether a Pod is a valid traffic target: while
+  it fails, the Pod stays Running but its address is dropped from Service
+  Endpoints, and traffic stops until the probe passes again. Restarting the
+  container is the job of the livenessProbe, not readiness. Deployments do not
+  scale themselves down on readiness failures, and a failed probe does not
+  evict a Pod from its node.

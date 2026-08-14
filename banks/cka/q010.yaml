@@ -1,0 +1,26 @@
+kind: hands-on
+domain: services-networking
+level: quick
+title: Expose a Deployment with a NodePort Service
+prompt: |
+  Deployment `web` (selector `app=web`, container port 80) runs in namespace
+  `practice`. Create a Service named `web-svc` of type NodePort that exposes
+  container port 80 and listens on node port 30080.
+solution: |
+  kubectl -n practice expose deployment web --name=web-svc --type=NodePort \
+    --port=80 --target-port=80
+  kubectl -n practice patch service web-svc --type merge \
+    -p '{"spec":{"ports":[{"port":80,"targetPort":80,"nodePort":30080}]}}'
+checks:
+  - desc: Service web-svc exists in practice
+    run: kubectl -n practice get service web-svc -o name
+    equals: service/web-svc
+  - desc: Service type is NodePort
+    run: kubectl -n practice get service web-svc -o jsonpath='{.spec.type}'
+    equals: NodePort
+  - desc: Service selects pods labelled app=web
+    run: kubectl -n practice get service web-svc -o jsonpath='{.spec.selector.app}'
+    equals: web
+  - desc: Service listens on node port 30080
+    run: kubectl -n practice get service web-svc -o jsonpath='{.spec.ports[0].nodePort}'
+    equals: 30080

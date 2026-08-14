@@ -1,0 +1,21 @@
+kind: knowledge
+domain: services-networking
+level: quick
+title: Services, headless services and DNS
+prompt: |
+  Which statement about Kubernetes Services and DNS is correct?
+options:
+  A: "A headless Service (spec.clusterIP: None) has no cluster IP; its DNS name resolves to the IPs of the backing pods."
+  B: A ClusterIP Service's DNS name resolves to the IP addresses of each backing pod.
+  C: A NodePort Service is only reachable from inside the cluster.
+  D: A LoadBalancer Service is a synonym for the ExternalName type.
+answer: A
+explanation: |
+  A headless Service (spec.clusterIP: None) gets no cluster IP and no
+  kube-proxy load balancing; its DNS name returns A records for each selected
+  pod, so clients reach the individual pods directly. A ClusterIP Service's
+  DNS name resolves to the single virtual cluster IP, not the pod IPs, so B
+  is wrong. NodePort Services are reachable from outside the cluster via
+  `<nodeIP>:<nodePort>`, so C is wrong, and LoadBalancer is its own type that
+  exposes a NodePort through a cloud load balancer — it is not ExternalName,
+  so D is wrong.

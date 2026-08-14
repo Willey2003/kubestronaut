@@ -1,0 +1,24 @@
+kind: knowledge
+domain: exporters-alerting
+level: core
+title: Alerting rules and Alertmanager routing
+prompt: |
+  An alerting rule fires. Your infrastructure team must receive a Slack
+  message while the payments app team gets a page. Where is this routing
+  decision made?
+options:
+  A: "In Alertmanager: Prometheus rules send alerts to Alertmanager, whose
+    route tree matches alert labels (for example, severity or team) to
+    different receivers such as Slack, email, or webhook."
+  B: "In Prometheus: each alerting rule directly emails its recipients."
+  C: In Grafana, because routing is a dashboard concern.
+  D: In the exporter that produced the metric.
+answer: A
+explanation: |
+  Prometheus alerting rules (with expr, a for duration, and labels or
+  annotations) evaluate continuously and send firing alerts to
+  Alertmanager. Alertmanager then deduplicates, applies silences, and walks
+  its route tree-matching labels such as severity="page" or
+  team="payments"-to deliver through the appropriate receiver (contact
+  point). Exporters never make routing decisions; they only produce metric
+  samples.

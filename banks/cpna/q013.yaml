@@ -1,0 +1,23 @@
+kind: knowledge
+domain: promql
+level: deep
+title: Comparisons filter the result set
+prompt: |
+  node_memory_available_bytes has one series per node. What does the
+  expression node_memory_available_bytes < 1e9 return when exactly two
+  nodes have dipped below 1 GB?
+options:
+  A: Only the series that satisfy the condition-comparison operators filter
+    the result vector, so just the two low nodes appear (and the result is
+    empty if none match).
+  B: Every node series with an added value of 1 or 0.
+  C: An error, because < is not a valid PromQL operator.
+  D: A single series holding the smallest value across all nodes.
+answer: A
+explanation: |
+  Comparison operators (<, >, ==, <=, >=, !=) act as filters: only the
+  series whose comparison holds are returned, which makes them ideal for
+  alerting thresholds. If you need a 0/1 indicator for every series instead,
+  append bool to the operator (for example, < bool 1e9). The vector set
+  operators and/or/unless combine whole vectors based on label matching
+  rather than per-series filtering.

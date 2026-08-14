@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kubestronaut 2026</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header>
+    <h1>Kubestronaut <span>2026</span></h1>
+    <p class="tagline">CNCF / Linux Foundation certification simulator &amp; learning platform</p>
+  </header>
+
+  <main>
+    <section id="banks" class="grid"></section>
+
+    <section id="attempts">
+      <h2>Past attempts</h2>
+      <table id="attempts-table">
+        <thead><tr><th>Bank</th><th>Mode</th><th>Status</th><th>Score</th><th>Pass</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </main>
+
+  <div id="modal" class="modal hidden">
+    <div class="modal-box">
+      <h3 id="modal-title"></h3>
+      <div id="modal-body"></div>
+      <button id="modal-start" class="btn primary">Start attempt</button>
+      <button id="modal-cancel" class="btn">Cancel</button>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

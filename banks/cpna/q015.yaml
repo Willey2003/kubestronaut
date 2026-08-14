@@ -1,0 +1,23 @@
+kind: knowledge
+domain: grafana
+level: core
+title: Building a Grafana dashboard
+prompt: |
+  You want a Grafana dashboard showing request latency from a Prometheus
+  server. Which steps are required?
+options:
+  A: Add Prometheus as a data source, then create a dashboard with a
+    time-series panel whose query targets that data source using PromQL.
+  B: Export the metrics as CSV files and upload them into each panel.
+  C: Use Prometheus's built-in dashboards, since Grafana cannot query it
+    directly.
+  D: No configuration is needed-Grafana panels discover Prometheus
+    automatically.
+answer: A
+explanation: |
+  A Grafana data source is the backend that Grafana queries, Prometheus
+  being the most common one for cloud native monitoring. A panel is a
+  single visualization (time-series, bar gauge, table, and so on) backed by
+  one or more queries, and a dashboard is a collection of panels arranged on
+  a grid. The panel query is written in PromQL, evaluated against the data
+  source, and scaled to the time range selected in the dashboard.

@@ -1,0 +1,38 @@
+kind: knowledge
+domain: kubernetes-resources
+level: core
+title: Namespaces for logical isolation
+prompt: |
+  Three product teams share one cluster. The platform team must prevent teams
+  from interfering with each other's resources and must bound how much CPU and
+  memory each team can consume. Which combination of features gives them
+  logical separation and enforceable limits?
+options:
+  A: "Namespaces, with ResourceQuotas and LimitRanges, backed by RBAC that scopes permissions to each namespace."
+  B: "A separate virtual machine for each team."
+  C: "Random pod names with no namespaces."
+  D: "Putting all teams in the default namespace and relying on trust."
+answer: A
+explanation: |
+  Namespaces provide logical isolation and scoping within one cluster.
+  ResourceQuotas bound aggregate CPU/memory/PVC count per namespace, LimitRanges
+  set per-pod defaults and caps, and RBAC Roles/RoleBindings grant permissions
+  that are namespace-scoped. Namespaces are logical, not a security boundary,
+  so NetworkPolicies should be added where network isolation is required.
+solution: |
+  Namespaces partition a single cluster into logical, scoped groups that
+  multiple teams can share. ResourceQuotas bound the total CPU, memory, and
+  object counts a namespace may consume, and LimitRanges constrain individual
+  pods and containers; RBAC Roles and RoleBindings grant permissions only
+  inside a given namespace. Namespace separation is logical rather than a hard
+  security boundary, so teams that need to block network traffic between
+  namespaces must also apply NetworkPolicies.
+checks:
+  - desc: Names namespaces as the grouping mechanism
+    contains: "Namespaces"
+  - desc: Mentions ResourceQuotas
+    contains: "ResourceQuotas"
+  - desc: Mentions RBAC scoping
+    contains: "RBAC"
+  - desc: Notes namespaces are logical, not a security boundary
+    contains: "security boundary"

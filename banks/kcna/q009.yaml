@@ -1,0 +1,39 @@
+kind: knowledge
+domain: containers-orchestration
+level: deep
+title: Deployment, ReplicaSet, and rollout ownership
+prompt: |
+  A team scaled a Deployment to 20 replicas, then triggered an image update.
+  Mid-rollout they inspect `kubectl get replicasets` and see two ReplicaSets
+  with different desired counts. An engineer is confused about who owns the
+  Pods and why there are two ReplicaSets. Which explanation is correct?
+options:
+  A: "The Deployment owns the ReplicaSets; a rollout creates a new ReplicaSet with the new template and the Deployment orchestrates a gradual shift between them."
+  B: "Two Deployments were created by accident and must be deleted."
+  C: "ReplicaSets create Deployments, and the older ReplicaSet owns the new one."
+  D: "Pods are owned directly by the Deployment, and ReplicaSets are just labels."
+answer: A
+explanation: |
+  A Deployment manages one or more ReplicaSets. During a rollout the Deployment
+  creates a new ReplicaSet with the updated pod template and gradually shifts
+  replicas from the old ReplicaSet to the new one, so seeing two ReplicaSets
+  mid-rollout is expected. ReplicaSets own Pods; Deployments own ReplicaSets
+  and record rollout revisions for rollback.
+solution: |
+  The Deployment is the top-level controller: it owns ReplicaSets, and each
+  ReplicaSet owns the Pods created from a specific pod template. When an image
+  update triggers a rollout, the Deployment creates a new ReplicaSet with the
+  updated template and progressively scales it up while scaling the old
+  ReplicaSet down, so two ReplicaSets coexisting mid-rollout is normal.
+  Keeping the previous ReplicaSet around is what makes `kubectl rollout undo`
+  possible, because a rollback simply shifts replicas back to the prior
+  revision.
+checks:
+  - desc: Says the Deployment owns ReplicaSets
+    contains: "ReplicaSet"
+  - desc: Explains a new ReplicaSet per rollout
+    contains: "rollout"
+  - desc: Explains the gradual shift between ReplicaSets
+    contains: "scales"
+  - desc: Mentions rollback via undo
+    contains: "rollback"

@@ -1,0 +1,22 @@
+kind: knowledge
+domain: promql
+level: core
+title: rate(), irate(), and increase()
+prompt: |
+  You want to alert when request traffic grows. Which expression gives the
+  average per-second request rate over the last five minutes, smoothing out
+  short bursts?
+options:
+  A: rate(http_requests_total[5m])
+  B: irate(http_requests_total[5m])
+  C: increase(http_requests_total[5m])
+  D: sum(http_requests_total[5m])
+answer: A
+explanation: |
+  rate() computes the per-second average rate of increase across the whole
+  range vector, so it is smooth and robust to counter resets-the right
+  choice for alerting. irate() looks only at the last two samples, which is
+  far more reactive but noisy, so it suits graphs rather than rules.
+  increase() returns the total increase over the window (roughly
+  rate(...)*300 for a 5m window), not a per-second value, and sum()
+  aggregates series but computes no rate at all.

@@ -1,0 +1,23 @@
+kind: knowledge
+domain: observability-fundamentals
+level: core
+title: Label cardinality risk
+prompt: |
+  You are designing the labels for a new Prometheus metric
+  http_requests_total. Which label choice is a cardinality risk that can
+  degrade the whole Prometheus server?
+options:
+  A: A request_id label containing a fresh UUID per request, creating a new
+    time series for every request.
+  B: A method label with the bounded values GET and POST.
+  C: A status label with the bounded classes 2xx, 3xx, 4xx, and 5xx.
+  D: No labels at all, so that every request is aggregated into one series.
+answer: A
+explanation: |
+  Every unique combination of label values creates a separate time series,
+  and each series costs memory, disk, and query time. A per-request UUID is
+  effectively unbounded cardinality and will exhaust the server, while
+  bounded labels such as method or status class stay small and cheap to
+  aggregate over. The rule of thumb is to keep the set of label values
+  small and predictable, and to keep identifying data in annotations rather
+  than labels.

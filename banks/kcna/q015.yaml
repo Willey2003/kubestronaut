@@ -1,0 +1,37 @@
+kind: knowledge
+domain: application-delivery
+level: core
+title: Helm for packaging and templating
+prompt: |
+  The platform team maintains a dozen YAML manifests per microservice
+  (Deployment, Service, ConfigMap) and must redeploy them to dev, staging, and
+  production with slightly different values. They want a packaged, versioned,
+  installable unit. Which tool fits, and what are its core concepts?
+options:
+  A: "Helm: a chart packages templated manifests, values.yaml supplies per-environment overrides, and a deployed chart is a release."
+  B: "kubectl apply with --namespace, which handles templating automatically."
+  C: "A cron job that renames files per environment."
+  D: "Storing all environments in one manifest with no overrides."
+answer: A
+explanation: |
+  Helm packages Kubernetes manifests into a chart with Go-template
+  placeholders; a values.yaml (and per-environment value files) fills in the
+  template, and each installation is tracked as a release that can be upgraded
+  and rolled back. `kubectl apply` does no templating or release tracking.
+solution: |
+  Helm packages a set of Kubernetes manifests into a chart whose templates
+  contain placeholders that are rendered from values files, so one chart
+  can deploy to dev, staging, and production by supplying different values.yaml
+  per environment. Each installation is recorded as a release with a revision
+  number, which enables `helm upgrade` and `helm rollback`. Charts themselves
+  can be versioned and stored in a chart repository, giving teams a packaged,
+  reusable, versioned unit of application delivery.
+checks:
+  - desc: Names Helm and charts
+    contains: "Helm"
+  - desc: Mentions templating from values
+    contains: "template"
+  - desc: Mentions values files per environment
+    contains: "values"
+  - desc: Mentions releases with upgrade and rollback
+    contains: "release"

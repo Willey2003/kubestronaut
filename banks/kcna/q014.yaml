@@ -1,0 +1,40 @@
+kind: knowledge
+domain: kubernetes-resources
+level: deep
+title: ConfigMaps, Secrets, and encryption
+prompt: |
+  A service needs a database hostname, a feature flag, and a database password
+  at startup. An engineer plans to put all three into a ConfigMap because it is
+  easy to read, and adds that Secrets are "just base64." Which approach is
+  correct, and what must the team understand about Secrets?
+options:
+  A: "Put non-sensitive config like hostnames and flags in a ConfigMap; put the password in a Secret. Understand that base64 is encoding, not encryption, so enable encryption at rest and tighten RBAC."
+  B: "Put everything in the ConfigMap, since Secrets provide no extra safety."
+  C: "Put everything in the Secret, since ConfigMaps are deprecated."
+  D: "Store the password in the image itself."
+answer: A
+explanation: |
+  ConfigMaps hold non-sensitive configuration (feature flags, hostnames that
+  are not credentials), and Secrets hold sensitive values such as passwords and
+  API keys. A Secret's value is base64-encoded in YAML, which is merely an
+  encoding, not encryption, so the data is not protected by the encoding
+  itself. Real protection comes from encryption at rest (e.g. KMS-backed),
+  tight RBAC, and short-lived credentials.
+solution: |
+  Use a ConfigMap for non-sensitive configuration such as hostnames and feature
+  flags, and a Secret for credentials like the database password. Both can be
+  consumed as environment variables or mounted files. A Secret's values are
+  only base64-encoded in a manifest, and base64 is encoding, not encryption, so
+  it does not hide the value from anyone who can read the object. Production
+  protection requires encryption at rest, for example KMS-backed encryption of
+  the etcd datastore, plus narrow RBAC so only the workload's ServiceAccount
+  can read the Secret.
+checks:
+  - desc: Assigns config to the ConfigMap
+    contains: "ConfigMap"
+  - desc: Assigns credentials to the Secret
+    contains: "Secret"
+  - desc: Explains base64 is encoding, not encryption
+    contains: "base64"
+  - desc: Recommends encryption at rest and RBAC
+    contains: "encryption at rest"

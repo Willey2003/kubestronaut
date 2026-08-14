@@ -1,0 +1,82 @@
+kind: hands-on
+domain: services-networking
+level: core
+title: Route HTTP traffic with an Ingress
+prompt: |
+  Namespace `ckad-q16` does not exist yet — create it as part of this task.
+  Create a Deployment named `app` in namespace `ckad-q16` running 2 replicas
+  of image `nginx:1.25` with the label `app=app` and container port 80. Create
+  a Service named `app-svc` in the same namespace that selects pods labelled
+  `app=app`, listens on port 80 and targets container port 80. Finally create
+  an Ingress named `app-ing` that routes requests for host `app.example.com`
+  with path `/` (pathType `Prefix`) to the `app-svc` Service on port 80.
+solution: |
+  kubectl create namespace ckad-q16
+  cat <<'EOF' | kubectl apply -f -
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: app
+    namespace: ckad-q16
+  spec:
+    replicas: 2
+    selector:
+      matchLabels:
+        app: app
+    template:
+      metadata:
+        labels:
+          app: app
+      spec:
+        containers:
+          - name: app
+            image: nginx:1.25
+            ports:
+              - containerPort: 80
+  EOF
+  kubectl -n ckad-q16 rollout status deployment/app --timeout=90s
+  kubectl -n ckad-q16 expose deployment app --name=app-svc --port=80 --target-port=80
+  cat <<'EOF' | kubectl apply -f -
+  apiVersion: networking.k8s.io/v1
+  kind: Ingress
+  metadata:
+    name: app-ing
+    namespace: ckad-q16
+  spec:
+    rules:
+      - host: app.example.com
+        http:
+          paths:
+            - path: /
+              pathType: Prefix
+              backend:
+                service:
+                  name: app-svc
+                  port:
+                    number: 80
+  EOF
+checks:
+  - desc: Deployment app exists in ckad-q16
+    run: kubectl -n ckad-q16 get deployment app -o name
+    equals: deployment.apps/app
+  - desc: Service app-svc exists in ckad-q16
+    run: kubectl -n ckad-q16 get service app-svc -o name
+    equals: service/app-svc
+  - desc: Service selects pods labelled app=app
+    run: kubectl -n ckad-q16 get service app-svc -o jsonpath='{.spec.selector.app}'
+    equals: app
+  - desc: Ingress app-ing exists in ckad-q16
+    run: kubectl -n ckad-q16 get ingress app-ing -o name
+    equals: ingress.networking.k8s.io/app-ing
+  - desc: Ingress routes the app.example.com host
+    run: kubectl -n ckad-q16 get ingress app-ing -o jsonpath='{.spec.rules[0].host}'
+    equals: app.example.com
+  - desc: Ingress matches the root path
+    run: kubectl -n ckad-q16 get ingress app-ing -o jsonpath='{.spec.rules[0].http.paths[0].path}'
+    equals: /
+  - desc: Ingress forwards to the app-svc Service
+    run: kubectl -n ckad-q16 get ingress app-ing -o jsonpath='{.spec.rules[0].http.paths[0].backend.service.name}'
+    equals: app-svc
+  - desc: Ingress targets Service port 80
+    run: kubectl -n ckad-q16 get ingress app-ing -o jsonpath='{.spec.rules[0].http.paths[0].backend.service.port.number}'
+    equals: 80

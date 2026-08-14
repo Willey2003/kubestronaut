@@ -1,0 +1,42 @@
+kind: knowledge
+domain: cloud-native-networking
+level: deep
+title: NetworkPolicy for micro-segmentation
+prompt: |
+  The security team requires that only the frontend tier may reach the database
+  tier, and the database tier may not initiate outbound connections. Pod-to-pod
+  traffic in the cluster is otherwise unrestricted by default. How does the
+  team enforce these rules, and what is a key caveat about enforcement?
+options:
+  A: "Apply a NetworkPolicy that selects the database pods by label and declares ingress from the frontend tier and denies egress; note that a CNI plugin must enforce policies, and default-deny applies only when a policy selects the pod."
+  B: "Block traffic with firewall rules on every pod's operating system."
+  C: "Rename the database pods so nobody can find them."
+  D: "Use a Service with a unique port number as a security control."
+answer: A
+explanation: |
+  NetworkPolicy objects express ingress and egress rules between labeled pods.
+  If no policy selects a pod, it defaults to allowing all traffic, so teams
+  typically add an explicit default-deny policy. Enforcement is not done by
+  kube-proxy or the API server; it is done by the CNI plugin (Calico, Cilium,
+  etc.), which must support NetworkPolicy. This is a security control, not just
+  a naming or port convention.
+solution: |
+  The team should apply NetworkPolicies. A NetworkPolicy selects Pods by label
+  and declares allowed ingress and egress traffic: an ingress rule can allow
+  traffic only from the frontend tier's labels, and omitting egress blocks
+  outbound connections from the database tier. Two caveats matter: by default,
+  pods not selected by any NetworkPolicy allow all traffic, so a default-deny
+  policy is usually needed first; and enforcement happens in the CNI plugin,
+  such as Calico or Cilium, so the cluster must run a CNI that supports
+  NetworkPolicy. The API server and kube-proxy do not enforce these policies.
+checks:
+  - desc: Names NetworkPolicy
+    contains: "NetworkPolicy"
+  - desc: Mentions ingress rules
+    contains: "ingress"
+  - desc: Mentions egress rules
+    contains: "egress"
+  - desc: Notes default-allow unless selected
+    contains: "default-deny"
+  - desc: Notes CNI enforcement
+    contains: "CNI"

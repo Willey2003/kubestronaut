@@ -1,0 +1,28 @@
+kind: hands-on
+domain: cluster-security
+level: core
+title: Grant a ServiceAccount least-privilege pod read access
+prompt: |
+  ServiceAccount `deployer` exists in namespace `ops`. Create a Role named
+  `pod-reader` in namespace `ops` that allows get, list, and watch on pods, and
+  bind it to the `deployer` ServiceAccount with a RoleBinding named
+  `deployer-pods`. The account must NOT be able to delete pods.
+solution: |
+  kubectl -n ops create role pod-reader --verb=get,list,watch --resource=pods
+  kubectl -n ops create rolebinding deployer-pods --role=pod-reader --serviceaccount=ops:deployer
+setup:
+  - kubectl create ns ops
+  - kubectl -n ops create serviceaccount deployer
+checks:
+  - desc: Role pod-reader exists
+    run: kubectl -n ops get role pod-reader -o name
+    equals: role.rbac.authorization.k8s.io/pod-reader
+  - desc: Role allows get, list, and watch on pods
+    run: "kubectl -n ops get role pod-reader -o jsonpath='{.rules[0].verbs}'"
+    equals: '["get","list","watch"]'
+  - desc: ServiceAccount can list pods in the namespace
+    run: kubectl auth can-i list pods -n ops --as=system:serviceaccount:ops:deployer
+    equals: yes
+  - desc: ServiceAccount cannot delete pods
+    run: kubectl auth can-i delete pods -n ops --as=system:serviceaccount:ops:deployer
+    equals: no

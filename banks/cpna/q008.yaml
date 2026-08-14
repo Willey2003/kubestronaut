@@ -1,0 +1,22 @@
+kind: knowledge
+domain: prometheus-fundamentals
+level: quick
+title: Counter vs gauge
+prompt: |
+  You instrument a web server so that http_requests_total counts every
+  request served, monotonically increasing over time. Which metric type is
+  the right one, and how should it be consumed?
+options:
+  A: A counter, which only increases (and resets on restart); it should be
+    turned into a rate with rate() before graphing or alerting.
+  B: A gauge, because the value can go up and down as requests arrive.
+  C: A histogram, because it stores a distribution of request counts.
+  D: A summary, because quantiles are computed on the client.
+answer: A
+explanation: |
+  A counter is a cumulative, monotonically increasing value: it only goes
+  up (apart from a reset when the process restarts), which makes it perfect
+  for totals such as requests served or bytes sent. Raw counters are
+  meaningless on a graph, so they are consumed with rate(), irate(), or
+  increase(). A gauge, by contrast, is for values that naturally rise and
+  fall, such as temperature or in-flight requests.

@@ -1,0 +1,23 @@
+kind: knowledge
+domain: workloads-scheduling
+level: deep
+title: Scheduler ordering, priorities and QoS
+prompt: |
+  While kube-scheduler places pods on nodes, several mechanisms affect the
+  order in which pending pods are considered and how they are treated during
+  eviction. Which statement is correct?
+options:
+  A: Pods whose spec.priorityClassName references a PriorityClass are considered before lower-priority pods.
+  B: The scheduler always places pending pods strictly in the order they were created (FIFO).
+  C: A pod's QoS class is derived from its restartPolicy.
+  D: A higher-priority pod is always scheduled on the node with the most free capacity.
+answer: A
+explanation: |
+  kube-scheduler keeps a priority queue: pending pods are ordered by their
+  PriorityClass (spec.priorityClassName), so critical system pods are scheduled
+  first, and that same ordering is used to decide evictions when a node is
+  under memory or disk pressure. The queue is therefore not FIFO (B). A pod's
+  QoS class (Guaranteed, Burstable or BestEffort) is computed from CPU and
+  memory requests and limits across containers, not from restartPolicy (C).
+  Priority only orders the queue; the final node choice still depends on
+  resource fit, affinity and other predicates, so D is wrong.

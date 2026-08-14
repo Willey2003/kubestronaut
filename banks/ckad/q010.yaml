@@ -1,0 +1,67 @@
+kind: hands-on
+domain: observability-maintenance
+level: core
+title: Add liveness and readiness probes to a Deployment
+prompt: |
+  Namespace `ckad-q10` does not exist yet — create it as part of this task.
+  Create a Deployment named `health` in namespace `ckad-q10` running 2
+  replicas of image `nginx:1.25` (container name `health`, container port 80).
+  Configure a livenessProbe that HTTP-GETs `/` on port 80 every 5 seconds
+  (`initialDelaySeconds: 5`), and a readinessProbe that HTTP-GETs `/` on port
+  80 every 5 seconds (`initialDelaySeconds: 3`). The rollout must complete.
+solution: |
+  kubectl create namespace ckad-q10
+  cat <<'EOF' | kubectl apply -f -
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: health
+    namespace: ckad-q10
+  spec:
+    replicas: 2
+    selector:
+      matchLabels:
+        app: health
+    template:
+      metadata:
+        labels:
+          app: health
+      spec:
+        containers:
+          - name: health
+            image: nginx:1.25
+            ports:
+              - containerPort: 80
+            livenessProbe:
+              httpGet:
+                path: /
+                port: 80
+              initialDelaySeconds: 5
+              periodSeconds: 5
+            readinessProbe:
+              httpGet:
+                path: /
+                port: 80
+              initialDelaySeconds: 3
+              periodSeconds: 5
+  EOF
+  kubectl -n ckad-q10 rollout status deployment/health --timeout=90s
+checks:
+  - desc: Deployment health exists in ckad-q10
+    run: kubectl -n ckad-q10 get deployment health -o name
+    equals: deployment.apps/health
+  - desc: Liveness probe GETs the root path
+    run: kubectl -n ckad-q10 get deployment health -o jsonpath='{.spec.template.spec.containers[0].livenessProbe.httpGet.path}'
+    equals: /
+  - desc: Liveness probe targets port 80
+    run: kubectl -n ckad-q10 get deployment health -o jsonpath='{.spec.template.spec.containers[0].livenessProbe.httpGet.port}'
+    equals: 80
+  - desc: Readiness probe GETs the root path
+    run: kubectl -n ckad-q10 get deployment health -o jsonpath='{.spec.template.spec.containers[0].readinessProbe.httpGet.path}'
+    equals: /
+  - desc: Readiness probe targets port 80
+    run: kubectl -n ckad-q10 get deployment health -o jsonpath='{.spec.template.spec.containers[0].readinessProbe.httpGet.port}'
+    equals: 80
+  - desc: Rollout completed successfully
+    run: kubectl -n ckad-q10 rollout status deployment/health --timeout=90s
+    exit-success: true

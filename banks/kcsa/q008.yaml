@@ -1,0 +1,19 @@
+kind: knowledge
+domain: workload-security
+level: quick
+title: Which field forces a container to run as a non-root user
+prompt: |
+  A Deployment must refuse to run as root even if the image declares a root
+  user. Which securityContext field on the pod or container enforces this?
+options:
+  A: "runAsNonRoot: true"
+  B: "readOnlyRootFilesystem: true"
+  C: "privileged: false"
+  D: "allowPrivilegeEscalation: true"
+answer: A
+explanation: |
+  `runAsNonRoot: true` makes the kubelet verify that the container will run
+  with a non-root user (from the image's USER or `runAsUser`) and reject the
+  pod otherwise. A read-only root filesystem protects against writes rather
+  than privilege, `privileged: false` is merely the default, and
+  `allowPrivilegeEscalation` should be `false`, not `true`.

@@ -1,0 +1,38 @@
+kind: knowledge
+domain: kubernetes-resources
+level: core
+title: Labels and selectors
+prompt: |
+  A Service needs to route traffic to a set of Pods, and a Deployment must
+  track its Pods. An engineer proposes matching Pods by exact name. Why do
+  Kubernetes controllers instead use labels and label selectors, and what do
+  they allow?
+options:
+  A: "Labels are arbitrary key/value metadata, and label selectors let controllers and Services discover Pods declaratively regardless of names."
+  B: "Labels replace pod names entirely and cannot be changed."
+  C: "Selectors only work on namespaces, never on Pods."
+  D: "Labels are used only for display in kubectl and have no behavior."
+answer: A
+explanation: |
+  Labels are arbitrary key/value metadata attached to objects; label selectors
+  express a query over those labels. Services, Deployments, ReplicaSets,
+  DaemonSets, and NetworkPolicies all select their target objects by labels,
+  which decouples the selector from the object name and lets new Pods join or
+  leave the set just by matching labels.
+solution: |
+  Labels are arbitrary key/value metadata attached to objects, and label
+  selectors are the query mechanism Kubernetes uses to find them. A Service
+  selects its backend Pods with a selector, a Deployment tracks the Pods
+  created from its template through labels, and objects can be listed or
+  grouped with `kubectl -l`. Because selection is based on labels rather than
+  names, Pods can be scaled, replaced, and rotated without anyone editing the
+  selector, which keeps controllers decoupled from individual object names.
+checks:
+  - desc: Defines labels as key/value metadata
+    contains: "key/value"
+  - desc: Mentions selectors as the query mechanism
+    contains: "selector"
+  - desc: Gives Service and Deployment selection examples
+    contains: "Service"
+  - desc: Explains decoupling from names
+    contains: "decoupled"

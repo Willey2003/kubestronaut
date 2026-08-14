@@ -1,0 +1,20 @@
+kind: knowledge
+domain: configuration-security
+level: quick
+title: What encoding and at-rest protection Secrets provide
+prompt: |
+  A developer claims that data stored in a Kubernetes Secret is secure at rest
+  because Secret values are encrypted in etcd. Which statement is correct?
+options:
+  A: Secret values are encrypted in etcd by default on every cluster.
+  B: Secret data is only base64-encoded in etcd; it is encrypted at rest only if the cluster enables encryption at rest (e.g. EncryptionConfiguration or a cloud KMS provider).
+  C: Secret values must be injected as environment variables; they cannot be mounted as files.
+  D: Secrets can only be consumed by Pods running in the same namespace as the kube-apiserver.
+answer: B
+explanation: |
+  Kubernetes Secrets are stored base64-encoded, not encrypted: the API server
+  encodes the raw value, and anyone with read access to etcd (or the ability
+  to `get` the Secret) can decode it. Real at-rest protection requires the
+  cluster to enable encryption at rest via an EncryptionConfiguration or a
+  KMS provider. Secrets can be injected both as files and as environment
+  variables, and they are namespace-scoped like ConfigMaps.
