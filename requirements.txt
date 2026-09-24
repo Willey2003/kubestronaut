@@ -1,0 +1,2 @@
+# The engine is otherwise pure stdlib; PyYAML is required to read exam banks.
+PyYAML>=6.0
