@@ -9,7 +9,7 @@ check() { if eval "$2"; then echo "  [ok] $1"; pass=$((pass+1)); else echo "  [!
 echo "Golden Astronaut 2026 - cluster preflight"
 
 check "CPU count >= 4"          '[ "$(nproc)" -ge 4 ]' "have $(nproc)"
-check "RAM >= 8 GB"             '[ "$(awk '/MemTotal/{print int($2/1024/1024)}' /proc/meminfo)" -ge 8 ]' \
+check "RAM >= 8 GB"             '[ "$(awk "/MemTotal/{print int(\$2/1024/1024)}" /proc/meminfo)" -ge 8 ]' \
                                 "have $(awk '/MemTotal/{print int($2/1024/1024)}' /proc/meminfo) GB"
 check "Disk free >= 30 GB"      '[ "$(df -BG --output=avail / 2>/dev/null | tail -1 | tr -dc 0-9)" -ge 30 ]' "low disk"
 check "oc client installed"     'command -v oc' "install oc (mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/)"
