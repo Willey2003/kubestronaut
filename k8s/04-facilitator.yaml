@@ -16,10 +16,10 @@ spec:
         app: facilitator
     spec:
       nodeSelector:
-        kubernetes.io/hostname: borg
+        kubernetes.io/hostname: lab-node-01   # set to the node that runs the lab registry
       containers:
         - name: facilitator
-          image: 10.198.1.19:5101/facilitator:latest
+          image: registry.lab.example:5101/facilitator:latest   # set to your registry host:port
           imagePullPolicy: Always
           ports:
             - name: http

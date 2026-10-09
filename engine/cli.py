@@ -112,7 +112,9 @@ def status() -> int:
     return 0
 
 
-def exam(bank_id: str, mode: str = "mastery", addr: str = "http://127.0.0.1:8900") -> int:
+def exam(bank_id: str, mode: str = "mastery", addr: str = "") -> int:
+    # Docker Compose publishes the UI on host port 8901; override with GA_URL.
+    addr = addr or os.getenv("GA_URL", "http://127.0.0.1:8901")
     body = json.dumps({"bank": bank_id, "mode": mode}).encode()
     req = urllib.request.Request(addr + "/api/attempts", data=body,
                                  headers={"Content-Type": "application/json"})
