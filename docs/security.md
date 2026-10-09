@@ -28,7 +28,7 @@ interfaces so you can practice from another machine on your LAN. This is an
   grading commands.
 - Never port-forward 8900 (or the registry 5100) on your router to the public
   Internet.
-- Prefer a VPN or SSH tunnel (`ssh -L 8900:127.0.0.1:8900 user@host`) over a
+- Prefer a VPN or SSH tunnel (`ssh -L 8901:127.0.0.1:8901 user@host`) over a
   bare expose when you are not on a trusted network.
 
 ## The conductor runs commands

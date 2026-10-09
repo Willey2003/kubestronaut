@@ -16,7 +16,7 @@ spec:
         app: registry
     spec:
       nodeSelector:
-        kubernetes.io/hostname: borg
+        kubernetes.io/hostname: lab-node-01   # set to the node that runs the lab registry
       containers:
         - name: registry
           image: registry:2

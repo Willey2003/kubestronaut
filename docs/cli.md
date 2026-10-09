@@ -29,7 +29,7 @@
 
 ```bash
 ./ga exam ex280-admin --mode training
-# -> prints attempt id; open http://localhost:8900/exam.html?attempt=<id>
+# -> prints attempt id; open http://localhost:8901/exam.html?attempt=<id>
 ```
 
 ## Single-bank validation
